@@ -665,7 +665,7 @@ details:not([open]) > :not(summary) { display: none; }
    위에 붙는 제목 줄에도 같은 막대를 그려 스크롤 중에도 이어 보이게 한다. */
 .record > details[open],
 .fold-card > details[open] { box-shadow: inset 3px 0 0 var(--accent); }
-.program-detail .detail-body { padding-top: 4px; }
+.program-detail .detail-body { padding-top: 0; }
 .performer-detail > summary,
 .piece-main > summary,
 .nested-composer > summary,
@@ -690,8 +690,11 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: var(--stick);
   z-index: 3;
+  background: var(--disclosure-bg);
   box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
+/* 펼친 줄은 제목 줄에만 옅은 배경을 깐다. 안쪽 제목 줄의 배경은 카드 폭 전체로 넓히되 글은 제자리에 두고,
+   바깥 컬러바가 가려지지 않게 같은 막대를 다시 그린다. */
 .performer-detail[open] > summary,
 .piece-main[open] > summary,
 .nested-composer[open] > summary,
@@ -699,9 +702,14 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: calc(var(--stick) + 52px);
   z-index: 2;
-  background: var(--card);
+  margin: 0 calc(-1 * var(--pad));
+  padding-right: var(--pad);
+  padding-left: var(--pad);
+  background: var(--disclosure-bg);
   box-shadow: 0 1px 0 var(--line);
 }
+.record > details[open] details[open] > summary,
+.fold-card > details[open] details[open] > summary { box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line); }
 .fold-list .term-row[open] > summary { top: var(--stick); }
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-s); font-weight: 700; letter-spacing: 0.02em; }
