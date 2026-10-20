@@ -110,7 +110,7 @@ button { cursor: pointer; }
   top: 0;
   z-index: 6;
   margin: 0 -16px 24px;
-  padding: 16px 16px 12px;
+  padding: 8px 16px;
   background: var(--header-bg);
   -webkit-backdrop-filter: saturate(1.4) blur(12px);
   backdrop-filter: saturate(1.4) blur(12px);
@@ -121,7 +121,7 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 0 12px;
+  padding: 20px 0 4px;
 }
 .brand { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .brand h1 { margin: 0; font-size: 22px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
@@ -266,6 +266,7 @@ button { cursor: pointer; }
   font-weight: 700;
   line-height: 1.35;
 }
+.record[data-status="seen"] .status { background: var(--subtle); color: var(--muted); }
 .record h3 {
   margin: 0;
   font-size: 20px;
@@ -325,13 +326,17 @@ summary {
 summary::-webkit-details-marker { display: none; }
 summary::marker { content: ""; }
 summary::after {
-  content: "⌄";
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.35;
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin: 0 4px 4px 0;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(45deg);
   transition: transform .16s ease;
 }
-details[open] > summary::after { transform: rotate(180deg); }
+details[open] > summary::after { margin: 4px 4px 0 0; transform: rotate(-135deg); }
+summary:hover::after { border-color: var(--accent); }
 details:not([open]) > :not(summary) { display: none; }
 .performer-detail { border-top: 1px solid var(--line); }
 .performer-detail:first-child { border-top: 0; }
@@ -350,7 +355,12 @@ details:not([open]) > :not(summary) { display: none; }
 .piece-summary-copy { min-width: 0; }
 .piece-title { display: block; font-size: 14px; font-weight: 700; }
 .piece-credit { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 400; }
-.record > details > summary { padding: 12px 16px; border-top: 1px solid var(--line); }
+.record > details > summary { padding: 12px 16px; border-top: 1px solid var(--line); background: var(--card); color: var(--muted); font-weight: 600; }
+.record > details[open] > summary,
+.record > details > summary:hover { color: var(--text); }
+.record > details:last-child,
+.record > details:last-child > summary { border-radius: 0 0 12px 12px; }
+.record > details[open]:last-child > summary { border-radius: 0; }
 .detail-body { padding: 0 16px 16px; }
 .info-detail > summary { padding-left: 0; padding-right: 0; }
 .info-section { padding-top: 16px; }
@@ -649,11 +659,7 @@ details:not([open]) > :not(summary) { display: none; }
 .timeline-era span { color: var(--muted); font-weight: 400; }
 .term-list {
   display: grid;
-  gap: 12px;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+  gap: 0;
 }
 .timeline-row {
   position: relative;
@@ -700,11 +706,14 @@ details:not([open]) > :not(summary) { display: none; }
   display: grid;
   grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr);
   gap: 16px;
-  padding: 12px 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
   background: var(--card);
 }
+.term-row:first-child { border-top: 0; }
+[data-dictionary-category] > section + section { margin-top: 24px; }
+[data-dictionary-category] > section > .section-row { margin: 0 0 8px; }
+.reading-card h4:first-child { margin-top: 0; }
 .term-name { font-size: 14px; font-weight: 700; }
 .term-body { min-width: 0; }
 .term-definition { margin: 0; color: var(--muted); }
@@ -868,7 +877,7 @@ details:not([open]) > :not(summary) { display: none; }
 .era-group, .composer-card, .work-row, #timeline-heading { scroll-margin-top: calc(var(--header-h, 120px) + 72px); }
 .term-row, .reading-card, .records > .record { scroll-margin-top: calc(var(--header-h, 120px) + 16px); }
 .flash { animation: flash 1.6s ease; }
-@keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 3px transparent; } }
+@keyframes flash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
 
 .to-top {
   position: fixed;
@@ -887,7 +896,7 @@ details:not([open]) > :not(summary) { display: none; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 440px) {
-  .app-header { padding-top: 12px; }
+  .brand-row { padding-top: 14px; }
   .stat strong { font-size: 20px; }
   .record-top { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
   .date-block { padding-right: 12px; }
@@ -905,11 +914,11 @@ details:not([open]) > :not(summary) { display: none; }
 </head>
 <body>
   <main class="wrap">
+    <div class="brand-row">
+      <div class="brand"><h1>클래식</h1><span>공연 기록 · 공부 노트</span></div>
+      <button class="icon-button" id="theme-toggle" type="button" aria-label="화면 테마 바꾸기">◐</button>
+    </div>
     <header class="app-header" id="app-header">
-      <div class="brand-row">
-        <div class="brand"><h1>클래식</h1><span>공연 기록 · 공부 노트</span></div>
-        <button class="icon-button" id="theme-toggle" type="button" aria-label="화면 테마 바꾸기">◐</button>
-      </div>
       <nav class="primary-tabs" aria-label="클래식 기록 메뉴" role="tablist">
         <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances">공연 기록</button>
         <button class="primary-tab" id="tab-study" type="button" role="tab" aria-controls="study-view" aria-selected="false" data-view="study">클래식 공부</button>
@@ -1301,7 +1310,8 @@ details:not([open]) > :not(summary) { display: none; }
 
           var banner = createElement('div', 'era-banner');
           banner.appendChild(createElement('strong', '', era.name));
-          banner.appendChild(createElement('span', '', era.years));
+          var eraComposerCount = studyData.composers.filter(function (composer) { return composer.era === era.name; }).length;
+          banner.appendChild(createElement('span', '', era.years + ' · 작곡가 ' + eraComposerCount + '명'));
           group.appendChild(banner);
 
           var description = createElement('div', 'era-description');
@@ -2378,7 +2388,7 @@ details:not([open]) > :not(summary) { display: none; }
         if (scrollFrame) return;
         scrollFrame = window.requestAnimationFrame(function () {
           scrollFrame = 0;
-          appHeader.classList.toggle('is-stuck', window.scrollY > 4);
+          appHeader.classList.toggle('is-stuck', window.scrollY > 0 && appHeader.getBoundingClientRect().top <= 0);
           toTop.classList.toggle('show', window.scrollY > 640);
           updateEraScrollSpy();
         });
