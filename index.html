@@ -112,16 +112,16 @@ button { cursor: pointer; }
   align-items: center;
   gap: 12px;
   margin: 0;
-  color: var(--muted);
-  font-size: var(--fs-s);
+  color: var(--text);
+  font-size: var(--fs-l);
   font-weight: 700;
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
 }
 .brand h1::before,
 .brand h1::after {
   content: "";
-  width: 28px;
+  width: 36px;
   height: 4px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
@@ -406,6 +406,38 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: var(--radius);
   color: var(--muted);
   text-align: center;
+}
+/* 시대 · 사전 탭: 고른 카드 하나만 보여 준다 */
+.chip-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  margin: -8px -16px 8px;
+  padding: 8px 16px;
+  background: var(--bg);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.chip-tabs::-webkit-scrollbar { display: none; }
+.chip-tab {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.chip-tab[aria-selected="true"] {
+  border-color: var(--accent-soft);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 /* 카드 머리: 시대 · 사전 카드의 제목 줄 (공연 카드의 record-top에 해당) */
 .fold-head { padding: var(--pad); border-bottom: 1px solid var(--line); }
@@ -723,7 +755,7 @@ details:not([open]) > :not(summary) { display: none; }
 
 .search-result.is-active { background: var(--accent-soft); }
 .search-result mark { background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.fold-card, .composer-card, .work-row, .term-row, [data-era-timeline] { scroll-margin-top: 16px; }
+.fold-card, .composer-card, .work-row, .term-row, [data-era-timeline] { scroll-margin-top: 72px; }
 .records > .record { scroll-margin-top: 16px; }
 .flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
@@ -998,10 +1030,12 @@ details:not([open]) > :not(summary) { display: none; }
       </div>
 
       <section class="study-panel" id="study-eras" role="tabpanel" aria-labelledby="tab-eras" data-study-panel="eras">
+        <nav class="chip-tabs" id="era-tabs" role="tablist" aria-label="시대"></nav>
         <div class="study-cards" id="era-overviews"></div>
       </section>
 
       <section class="study-panel" id="study-dictionary" role="tabpanel" aria-labelledby="tab-dictionary" data-study-panel="dictionary" hidden>
+        <nav class="chip-tabs" id="dictionary-tabs" role="tablist" aria-label="사전 분류"></nav>
         <div class="study-cards" id="dictionary-list"></div>
       </section>
     </section>
@@ -1503,6 +1537,7 @@ details:not([open]) > :not(summary) { display: none; }
       }
 
       function openAncestors(node) {
+        showCardFor(node);
         var parent = node.parentElement && node.parentElement.closest('details');
         while (parent) {
           parent.open = true;
@@ -1708,6 +1743,63 @@ details:not([open]) > :not(summary) { display: none; }
         renderStudy();
       } catch (error) {
         console.error(error);
+      }
+
+      // 시대 · 사전은 탭으로 카드 하나씩 보여 준다. 고른 탭은 이 브라우저에 기억한다.
+      function setupCardTabs(nav, list, attr, storageKey, labels) {
+        var cards = Array.prototype.slice.call(list.querySelectorAll('[' + attr + ']'));
+        if (!cards.length) return function () {};
+        var buttons = cards.map(function (card) {
+          var name = card.getAttribute(attr);
+          var button = createElement('button', 'chip-tab', labels[name] || name);
+          button.type = 'button';
+          button.setAttribute('role', 'tab');
+          button.setAttribute('data-card-name', name);
+          nav.appendChild(button);
+          return button;
+        });
+
+        function select(name) {
+          if (!cards.some(function (card) { return card.getAttribute(attr) === name; })) name = cards[0].getAttribute(attr);
+          cards.forEach(function (card) { card.hidden = card.getAttribute(attr) !== name; });
+          buttons.forEach(function (button) {
+            var selected = button.getAttribute('data-card-name') === name;
+            button.setAttribute('aria-selected', selected ? 'true' : 'false');
+            button.tabIndex = selected ? 0 : -1;
+            if (selected) nav.scrollTo({ left: button.offsetLeft - (nav.clientWidth - button.offsetWidth) / 2 });
+          });
+          storageSet(storageKey, name);
+        }
+
+        buttons.forEach(function (button, index) {
+          button.addEventListener('click', function () {
+            select(button.getAttribute('data-card-name'));
+            if (list.getBoundingClientRect().top < nav.offsetHeight) nav.parentElement.scrollIntoView({ block: 'start', behavior: 'instant' });
+          });
+          button.addEventListener('keydown', function (event) {
+            var nextIndex = index;
+            if (event.key === 'ArrowRight') nextIndex = (index + 1) % buttons.length;
+            else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + buttons.length) % buttons.length;
+            else if (event.key === 'Home') nextIndex = 0;
+            else if (event.key === 'End') nextIndex = buttons.length - 1;
+            else return;
+            event.preventDefault();
+            buttons[nextIndex].focus();
+            select(buttons[nextIndex].getAttribute('data-card-name'));
+          });
+        });
+        select(storageGet(storageKey));
+        return select;
+      }
+
+      var selectEraCard = setupCardTabs(document.getElementById('era-tabs'), document.getElementById('era-overviews'), 'data-era-card', 'classic-era', { '낭만 후기 · 국민악파': '낭만 후기' });
+      var selectDictionaryCard = setupCardTabs(document.getElementById('dictionary-tabs'), document.getElementById('dictionary-list'), 'data-dictionary-category', 'classic-dictionary', {});
+
+      function showCardFor(node) {
+        var card = node.closest('[data-era-card], [data-dictionary-category]');
+        if (!card) return;
+        if (card.hasAttribute('data-era-card')) selectEraCard(card.getAttribute('data-era-card'));
+        else selectDictionaryCard(card.getAttribute('data-dictionary-category'));
       }
 
       function activatePrimaryTab(button) {
