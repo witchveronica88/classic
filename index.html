@@ -609,7 +609,12 @@ details:not([open]) > :not(summary) { display: none; }
 .term-name { font-size: var(--fs-m); font-weight: 700; }
 .term-row[open] .term-name { color: var(--accent); }
 .term-body { min-width: 0; padding: 0 0 16px; line-height: 1.7; }
-.term-definition { margin: 0; color: var(--text); }
+.term-definition { margin: 0; color: var(--text); font-weight: 700; }
+.term-detail { margin: 8px 0 0; color: var(--text); }
+.term-listen { margin-top: 12px; }
+.term-listen .section-label { margin: 0 0 2px; }
+.term-listen p { margin: 0; }
+.fold-text { margin: 8px 0 0; }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
 .term-row[hidden] { display: none; }
 
@@ -1073,7 +1078,7 @@ details:not([open]) > :not(summary) { display: none; }
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
-  <script src="study-data.js?v=2"></script>
+  <script src="study-data.js?v=3"></script>
   <script>
     (function () {
       var primaryTabs = document.querySelectorAll('.primary-tab');
@@ -1105,6 +1110,13 @@ details:not([open]) > :not(summary) { display: none; }
         if (className) node.className = className;
         if (typeof text !== 'undefined') node.textContent = text;
         return node;
+      }
+
+      // "\n\n"으로 나눈 글을 문단으로 붙인다.
+      function appendParagraphs(parent, text, className) {
+        String(text || '').split(/\n\n+/).forEach(function (paragraph) {
+          if (paragraph.trim()) parent.appendChild(createElement('p', className || '', paragraph.trim()));
+        });
       }
 
       function appendList(parent, items) {
@@ -1243,6 +1255,12 @@ details:not([open]) > :not(summary) { display: none; }
           group.tabIndex = -1;
           group.setAttribute('data-era-card', era.name);
           group.appendChild(createFoldHead(era.name, era.years, era.summary, String(eraIndex + 1).padStart(2, '0')));
+
+          if (era.background && era.background.length) {
+            var background = createFoldSection('시대 배경', '');
+            era.background.forEach(function (paragraph) { appendParagraphs(background.body, paragraph, 'fold-text'); });
+            group.appendChild(background.section);
+          }
 
           var features = createFoldSection('시대 특징', era.points.length + '가지');
           appendList(features.body, era.points);
@@ -1397,7 +1415,7 @@ details:not([open]) > :not(summary) { display: none; }
           if (eraComposerList) eraComposerList.appendChild(card);
         });
 
-        function createDictionaryRow(name, description, category, sourceKind) {
+        function createDictionaryRow(name, description, category, sourceKind, detail, listen) {
           var row = createElement('details', 'term-row');
           row.tabIndex = -1;
           row.setAttribute('data-category', category);
@@ -1410,6 +1428,13 @@ details:not([open]) > :not(summary) { display: none; }
           row.appendChild(summary);
           var body = createElement('div', 'term-body');
           body.appendChild(createElement('p', 'term-definition', description));
+          appendParagraphs(body, detail, 'term-detail');
+          if (listen) {
+            var listenBlock = createElement('div', 'term-listen');
+            listenBlock.appendChild(createElement('h4', 'section-label', '들어 볼 곡'));
+            listenBlock.appendChild(createElement('p', '', listen));
+            body.appendChild(listenBlock);
+          }
 
           if (sourceKind === 'term') {
             var related = [];
@@ -1441,7 +1466,9 @@ details:not([open]) > :not(summary) { display: none; }
           items.forEach(function (item) {
             var name = sourceKind === 'term' ? item.name : item[0];
             var description = sourceKind === 'term' ? item.description : item[1];
-            list.appendChild(createDictionaryRow(name, description, category, sourceKind));
+            var detail = sourceKind === 'term' ? item.detail : item[2];
+            var listen = sourceKind === 'term' ? item.listen : '';
+            list.appendChild(createDictionaryRow(name, description, category, sourceKind, detail, listen));
           });
           return list;
         }
@@ -1673,16 +1700,16 @@ details:not([open]) > :not(summary) { display: none; }
           search: '사전 곡의 종류 작곡 기법 개념 사조 연주 편성 공연 관람 읽는 법 기타'
         });
         studyData.terms.forEach(function (term) {
-          entries.push({ kind: 'term', type: '사전', title: term.name, subtitle: dictionaryCategoryForTerm(term.category) + ' · ' + term.category, value: term.name, search: term.name + ' ' + term.category + ' ' + term.description });
+          entries.push({ kind: 'term', type: '사전', title: term.name, subtitle: dictionaryCategoryForTerm(term.category) + ' · ' + term.category, value: term.name, search: [term.name, term.category, term.description, term.detail || '', term.listen || ''].join(' ') });
         });
         studyData.instruments.sections.forEach(function (section) {
           if (section.title === '시대별 오케스트라 규모') return;
           section.items.forEach(function (item) {
-            entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '연주와 편성 · ' + section.title, value: '연주와 편성::' + item[0], search: item[0] + ' ' + item[1] + ' ' + section.title });
+            entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '연주와 편성 · ' + section.title, value: '연주와 편성::' + item[0], search: [item[0], item[1], item[2] || '', section.title].join(' ') });
           });
         });
         studyData.reading.catalogues.forEach(function (item) {
-          entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '읽는 법 · 기타 · 작품번호', value: '읽는 법 · 기타::' + item[0], search: item[0] + ' ' + item[1] + ' 작품번호 읽는 법' });
+          entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '읽는 법 · 기타 · 작품번호', value: '읽는 법 · 기타::' + item[0], search: [item[0], item[1], item[2] || '', '작품번호 읽는 법'].join(' ') });
         });
         return entries;
       }
