@@ -240,7 +240,6 @@ button { cursor: pointer; }
 .record-top + details > summary,
 .fold-head + details > summary { border-top: 0; }
 .program-detail .detail-body { padding-top: 12px; }
-.piece-list { overflow: hidden; border-radius: 8px; }
 .program-detail .composer-link { margin-top: 4px; font-size: var(--fs-s); }
 .program-detail .composer-link::after { content: " →"; }
 .summary-copy { display: flex; min-width: 0; align-items: baseline; gap: 8px; }
@@ -483,11 +482,10 @@ details:not([open]) > :not(summary) { display: none; }
 .study-card-body li + li { margin-top: 8px; }
 .era-genres { margin-top: 16px; }
 .era-genres .related-label { display: block; }
-/* 작곡가 줄: [이름 / 한 줄 소개][생몰년 / ＋] — 생몰년은 오른쪽 위 작은 회색 글씨 */
+/* 작곡가 줄: [이름][생몰년][＋] — 생몰년은 오른쪽의 작은 회색 글씨 */
 .nested-composer > summary {
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "name years" "line plus";
-  row-gap: 2px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas: "name years plus";
 }
 .composer-summary,
 .composer-main,
@@ -496,18 +494,6 @@ details:not([open]) > :not(summary) { display: none; }
 .nested-composer > summary::after { grid-area: plus; justify-self: end; }
 .nested-composer[open] .composer-name-line strong { color: var(--accent); }
 .composer-years { grid-area: years; justify-self: end; color: var(--muted); font-size: var(--fs-s); font-weight: 400; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.composer-line {
-  grid-area: line;
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: var(--fs-s);
-  font-weight: 400;
-  line-height: 1.5;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-.nested-composer[open] .composer-line { display: none; }
 .study-card-body { padding: 0 0 16px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
 .composer-detail-name { padding: 0 0 8px; color: var(--muted); font-size: var(--fs-s); }
@@ -619,11 +605,9 @@ details:not([open]) > :not(summary) { display: none; }
   line-height: inherit;
   vertical-align: baseline;
 }
-.term-summary { display: grid; gap: 2px; min-width: 0; }
+.term-summary { min-width: 0; }
 .term-name { font-size: var(--fs-m); font-weight: 700; }
-.term-preview { overflow: hidden; color: var(--muted); font-size: var(--fs-s); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 .term-row[open] .term-name { color: var(--accent); }
-.term-row[open] .term-preview { display: none; }
 .term-body { min-width: 0; padding: 0 0 16px; line-height: 1.7; }
 .term-definition { margin: 0; color: var(--text); }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
@@ -680,7 +664,6 @@ details:not([open]) > :not(summary) { display: none; }
 .record > details[open] > summary,
 .fold-card > details[open] > summary { background: var(--disclosure-bg); }
 .program-detail .detail-body { padding-top: 4px; }
-.piece-list { border-radius: 0; }
 .performer-detail > summary,
 .piece-main > summary,
 .nested-composer > summary,
@@ -695,6 +678,28 @@ details:not([open]) > :not(summary) { display: none; }
 .soloist-info p { color: var(--text); line-height: 1.7; }
 .performer-detail[open] .performer-name,
 .piece-main[open] .piece-title { color: var(--accent); }
+/* 펼친 줄의 제목은 내용을 읽는 동안 위에 붙어 있다.
+   공부 화면은 탭 줄(56px) 아래, 안쪽 항목은 바깥 제목 줄(52px) 아래에 붙는다. */
+#performance-view { --stick: 0px; }
+#study-view { --stick: 56px; }
+.record > details[open] > summary,
+.fold-card > details[open] > summary {
+  position: sticky;
+  top: var(--stick);
+  z-index: 3;
+  box-shadow: 0 1px 0 var(--line);
+}
+.performer-detail[open] > summary,
+.piece-main[open] > summary,
+.nested-composer[open] > summary,
+.term-row[open] > summary {
+  position: sticky;
+  top: calc(var(--stick) + 52px);
+  z-index: 2;
+  background: var(--disclosure-bg);
+  box-shadow: 0 1px 0 var(--line);
+}
+.fold-list .term-row[open] > summary { top: var(--stick); background: var(--card); }
 /* 한 번 더 펼친 항목은 상자 대신 왼쪽 강조선으로 범위를 보여 준다 */
 .performer-detail[open] > p,
 .piece-main[open] > .piece-body,
@@ -771,8 +776,11 @@ details:not([open]) > :not(summary) { display: none; }
 
 .search-result.is-active { background: var(--accent-soft); }
 .search-result mark { background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.fold-card, .composer-card, .work-row, .term-row, [data-era-timeline] { scroll-margin-top: 72px; }
+.fold-card, [data-era-timeline], .fold-list .term-row { scroll-margin-top: 72px; }
+.composer-card, .work-row, .term-row, .piece-main, .performer-detail { scroll-margin-top: 124px; }
 .records > .record { scroll-margin-top: 16px; }
+.record > details,
+.fold-card > details { scroll-margin-top: var(--stick); }
 .flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
 
@@ -1338,7 +1346,6 @@ details:not([open]) > :not(summary) { display: none; }
           nameLine.appendChild(createElement('strong', '', fullKoreanName));
           nameLine.appendChild(createElement('span', 'composer-years', lifespanMatch ? lifespanMatch[0].replace(',', '') : ''));
           nameBlock.appendChild(nameLine);
-          nameBlock.appendChild(createElement('span', 'composer-line', composer.summary.split('. ')[0].replace(/\.$/, '')));
           row.appendChild(nameBlock);
           summary.appendChild(row);
           card.appendChild(summary);
@@ -1399,7 +1406,6 @@ details:not([open]) > :not(summary) { display: none; }
           var summary = createElement('summary');
           var copy = createElement('span', 'term-summary');
           copy.appendChild(createElement('strong', 'term-name', name));
-          copy.appendChild(createElement('span', 'term-preview', description));
           summary.appendChild(copy);
           row.appendChild(summary);
           var body = createElement('div', 'term-body');
@@ -2154,6 +2160,20 @@ details:not([open]) > :not(summary) { display: none; }
       window.setInterval(refreshTemporalState, 60000);
 
       var toTop = document.getElementById('to-top');
+      // 내용을 읽다가 위에 붙은 제목을 눌러 접으면, 그 제목이 있던 자리로 화면을 돌려놓는다.
+      // 링크 이동처럼 코드가 접는 경우는 건드리지 않도록 직접 누른 줄만 처리한다.
+      var userToggled = null;
+      document.addEventListener('click', function (event) {
+        var summary = event.target.closest('summary');
+        userToggled = summary ? summary.parentElement : null;
+      }, true);
+      document.addEventListener('toggle', function (event) {
+        var details = event.target;
+        if (details !== userToggled || details.open) return;
+        userToggled = null;
+        if (details.getBoundingClientRect().top < 0) details.scrollIntoView({ block: 'start', behavior: 'instant' });
+      }, true);
+
       toTop.addEventListener('click', function () {
         window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
       });
