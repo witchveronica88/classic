@@ -161,7 +161,7 @@ button { cursor: pointer; }
 }
 .primary-tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   width: min(100%, 560px);
   margin: 0 auto;
 }
@@ -182,46 +182,11 @@ button { cursor: pointer; }
 .primary-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .primary-tab[aria-selected="true"] { color: var(--accent); }
 
-.filters,
-.era-filters {
-  display: flex;
-  gap: 8px;
-  margin: 0 0 24px;
-  flex-wrap: wrap;
-  overflow-x: visible;
-}
-.filters::-webkit-scrollbar,
-.era-filters::-webkit-scrollbar,
-.study-tabs::-webkit-scrollbar { display: none; }
-.filter,
-.era-filter {
-  flex: 0 0 auto;
-  min-height: 44px;
-  padding: 8px 16px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.filter[aria-selected="true"],
-.era-filter[aria-pressed="true"] {
-  border-color: var(--accent-soft);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 700;
-}
 
 .records,
-.era-overviews,
-.composer-list,
-.instrument-list { display: grid; gap: 16px; }
+.era-overviews { display: grid; gap: 16px; }
 .era-group,
-.timeline-list,
-.term-list,
-.instrument-section {
+.timeline-list {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -278,7 +243,8 @@ button { cursor: pointer; }
   font-weight: 700;
   line-height: 1.35;
 }
-.record[data-status="seen"] .status { background: var(--subtle); color: var(--muted); }
+.record[data-status="seen"] .status { display: none; }
+.record[data-status="seen"] .record-rating { margin-left: 0; }
 .record h3 {
   margin: 0;
   font-size: 22px;
@@ -289,20 +255,6 @@ button { cursor: pointer; }
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 14px;
-}
-.section-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0 0 8px;
-}
-.section-row h4,
-.people h4 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.35;
 }
 .program-credits { margin: 0; }
 .record-top + details > summary { border-top: 0; }
@@ -466,32 +418,21 @@ details:not([open]) > :not(summary) { display: none; }
 .search-kind { color: var(--accent); font-size: 14px; font-weight: 700; }
 .search-copy strong { display: block; font-size: 16px; font-weight: 700; }
 .search-copy span { display: block; color: var(--muted); font-size: 14px; }
-.search-empty, .term-empty, .empty { margin: 0; padding: 24px 16px; color: var(--muted); text-align: center; }
-.empty strong { display: block; color: var(--text); }
-.study-tabs {
-  display: flex;
-  gap: 16px;
-  margin: 0 0 16px;
-  overflow-x: auto;
-  border-bottom: 1px solid var(--line);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.study-tab {
-  position: relative;
-  flex: 0 0 auto;
-  min-height: 44px;
-  padding: 8px 0;
-  border: 0;
-  background: transparent;
+.search-empty, .term-empty { margin: 0; padding: 24px 16px; color: var(--muted); text-align: center; }
+/* Section headings outside cards (공연 묶음, 음악사 연표) */
+.group-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; }
+.group-head h2 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35; }
+.group-head span { color: var(--muted); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.record-group + .record-group { margin-top: 32px; }
+.group-empty {
+  margin: 0;
+  padding: 20px 16px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
   color: var(--muted);
-  font-size: 19px;
-  font-weight: 700;
-  white-space: nowrap;
+  text-align: center;
 }
-.study-tab[aria-selected="true"] { color: var(--accent); font-weight: 700; }
-.study-count { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
-.timeline-heading-row { margin-top: 24px; }
+.timeline-head { margin-top: 32px; }
 /* Sticky chip navigation shared by era tabs and dictionary categories */
 .era-tabs,
 .term-filters {
@@ -502,9 +443,7 @@ details:not([open]) > :not(summary) { display: none; }
   gap: 8px;
   margin: -8px -16px 8px;
   padding: 8px 16px;
-  background: var(--header-bg);
-  -webkit-backdrop-filter: saturate(1.4) blur(12px);
-  backdrop-filter: saturate(1.4) blur(12px);
+  background: var(--bg);
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -578,14 +517,6 @@ details:not([open]) > :not(summary) { display: none; }
 .inset-head .section-label { margin: 0; }
 .inset-head span { color: var(--muted); font-size: 14px; }
 .term-stack { margin: 16px var(--pad) var(--pad); }
-.term-stack .term-list { gap: 10px; overflow: visible; border: 0; border-radius: 0; background: transparent; }
-.term-stack .term-row {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--disclosure-bg);
-}
-.term-stack .term-name { font-size: 17px; }
 .era-summary { margin: 0; font-size: 17px; }
 .section-label {
   margin: 0 0 8px;
@@ -608,31 +539,16 @@ details:not([open]) > :not(summary) { display: none; }
 .callout .section-label { color: var(--accent); }
 .callout p { margin: 0; }
 .callout ul { color: var(--text); }
-.chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.chip-list > * {
-  display: inline-flex;
-  min-height: 32px;
-  align-items: center;
-  padding: 4px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
-}
-.chip-list > .study-link { color: var(--accent); }
-.chip-list > .study-link:hover { border-color: var(--accent); }
-.key-table { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 12px; }
-.key-cell { padding: 8px 4px; border-left: 1px solid var(--line); text-align: center; }
-.key-cell:first-child { border-left: 0; }
-.key-cell strong, .key-cell span { display: block; }
-.key-cell span { color: var(--muted); font-size: 14px; }
+.dot-list { margin-top: 4px; }
+.dot-list > * { display: inline; }
+.dot-list .study-link { display: inline; min-height: 0; padding: 0; font-size: 16px; font-weight: 500; }
+.dot-list .genre-text { color: var(--text); }
 .era-section li + li,
 .callout li + li,
 .study-card-body li + li,
 .key-guide li + li { margin-top: 8px; }
 .era-genres { margin-top: 16px; }
+.era-genres .related-label { display: block; }
 .nested-composer { border-top: 1px solid var(--line); }
 .nested-composer:first-child { border-top: 0; }
 .nested-composer > summary { min-height: 56px; padding: 12px 16px; background: transparent; }
@@ -683,13 +599,10 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .related-label { color: var(--muted); font-size: 14px; font-weight: 400; line-height: 1.6; }
 .study-link-list { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; font-size: 14px; font-weight: 400; line-height: 1.6; }
-.related-block:not(.era-genres) .study-link-list .study-link + .study-link::before {
-  content: "·";
-  margin: 0 6px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 400;
-}
+/* Inline link lists: the separator stays at the end of a line when the list wraps */
+.related-block .study-link-list { display: block; min-width: 0; }
+.related-block .study-link:not(:last-child)::after,
+.dot-list > :not(:last-child)::after { content: "\00a0·"; color: var(--muted); font-weight: 400; }
 .study-link,
 .composer-link {
   display: inline-flex;
@@ -705,6 +618,7 @@ details:not([open]) > :not(summary) { display: none; }
   text-decoration: none;
 }
 .related-block .study-link {
+  display: inline;
   min-height: 0;
   padding: 0;
   font-size: 14px;
@@ -738,10 +652,7 @@ details:not([open]) > :not(summary) { display: none; }
   font-weight: 700;
 }
 .timeline-era span { color: var(--muted); font-weight: 400; }
-.term-list {
-  display: grid;
-  gap: 0;
-}
+.term-list { display: grid; gap: 10px; }
 .timeline-row {
   position: relative;
   display: grid;
@@ -788,39 +699,16 @@ details:not([open]) > :not(summary) { display: none; }
   grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr);
   gap: 16px;
   padding: 14px 16px;
-  border-top: 1px solid var(--line);
-  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--disclosure-bg);
 }
-.term-row:first-child { border-top: 0; }
-.term-name { font-size: 16px; font-weight: 700; }
+.term-name { font-size: 17px; font-weight: 700; }
 .term-body { min-width: 0; }
 .term-definition { margin: 0; color: var(--muted); }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
-.term-row[data-category="형식 · 장르"] .related-block {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-}
-.term-row[data-category="형식 · 장르"] .related-label { margin: 0; }
-.term-row[data-category="형식 · 장르"] .study-link-list { gap: 0; }
-.term-row[data-category="형식 · 장르"] .study-link {
-  min-height: 0;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 400;
-}
 .term-row[hidden] { display: none; }
 
-.instrument-body { padding: 12px 16px 16px; }
-.instrument-body > p { margin: 0 0 12px; color: var(--muted); }
-.instrument-row { padding: 12px 0; border-top: 1px solid var(--line); }
-.instrument-row strong { display: block; font-size: 16px; font-weight: 700; }
-.instrument-row span { display: block; margin-top: 4px; color: var(--muted); }
-.catalogue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-.catalogue-row { padding: 12px 0; border-top: 1px solid var(--line); }
-.catalogue-row strong { display: block; font-size: 16px; font-weight: 700; }
-.catalogue-row span { display: block; margin-top: 4px; color: var(--muted); }
 .note-field { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
 .note-field label { display: block; margin-bottom: 8px; font-size: 16px; font-weight: 700; }
 .note-field textarea {
@@ -882,22 +770,6 @@ details:not([open]) > :not(summary) { display: none; }
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
-.term-row { padding: 16px var(--pad); }
-.era-genres .chip-list > * {
-  display: inline-flex;
-  min-height: 32px;
-  align-items: center;
-  padding: 4px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
-}
-.era-genres .chip-list > .study-link { color: var(--accent); }
-.study-tab[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
-.study-tabs { gap: 20px; }
 
 /* Stats, notes, calendar */
 .stats {
@@ -914,20 +786,6 @@ details:not([open]) > :not(summary) { display: none; }
 .stat strong { display: block; font-size: 22px; font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
 .stat strong small { margin-left: 2px; color: var(--muted); font-size: 14px; font-weight: 500; }
 .stat span { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; }
-.next-up {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0 0 16px;
-  padding: 12px 16px;
-  border-radius: var(--radius);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: 700;
-}
-.next-up span { color: var(--text); font-weight: 400; }
 .record-rating { display: inline-block; margin: 0 0 8px 6px; color: var(--star); font-size: 14px; letter-spacing: 1px; vertical-align: top; line-height: 24px; }
 .note-detail .detail-body { padding-top: 16px; }
 .rating {
@@ -1005,7 +863,6 @@ details:not([open]) > :not(summary) { display: none; }
   .record-top { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
   .date-block { padding-right: 12px; }
   .term-row { grid-template-columns: 1fr; gap: 4px; }
-  .catalogue-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1025,22 +882,23 @@ details:not([open]) > :not(summary) { display: none; }
     <nav class="tab-bar" id="tab-bar" aria-label="클래식 기록 메뉴">
       <div class="primary-tabs" role="tablist">
         <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2.2"/></svg><span>공연 기록</span></button>
-        <button class="primary-tab" id="tab-study" type="button" role="tab" aria-controls="study-view" aria-selected="false" data-view="study"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>클래식 공부</span></button>
+        <button class="primary-tab" id="tab-eras" type="button" role="tab" aria-controls="study-eras" aria-selected="false" data-view="study" data-study-section="eras"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>시대 · 작곡가</span></button>
+        <button class="primary-tab" id="tab-dictionary" type="button" role="tab" aria-controls="study-dictionary" aria-selected="false" data-view="study" data-study-section="dictionary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.5 5.3 8.3 4.8 5 5v13c3.3-.2 5.5.3 7 1.5 1.5-1.2 3.7-1.7 7-1.5V5c-3.3-.2-5.5.3-7 1.5z"/><path d="M12 6.5v13"/></svg><span>클래식 사전</span></button>
       </div>
     </nav>
 
     <section class="view-panel" id="performance-view" role="tabpanel" aria-labelledby="tab-performances">
     <div class="stats" id="stats" aria-label="관람 요약"></div>
-    <p class="next-up" id="next-up" hidden></p>
 
-    <nav class="filters" aria-label="공연 기록 필터" role="tablist">
-      <button class="filter" id="filter-all" type="button" role="tab" aria-controls="records-panel" aria-selected="true" data-filter="all" data-label="전체">전체 2</button>
-      <button class="filter" id="filter-upcoming" type="button" role="tab" aria-controls="records-panel" aria-selected="false" data-filter="upcoming" data-label="예정">예정 2</button>
-      <button class="filter" id="filter-seen" type="button" role="tab" aria-controls="records-panel" aria-selected="false" data-filter="seen" data-label="관람 완료">관람 완료 0</button>
-    </nav>
+    <section class="record-group" id="upcoming-group" aria-labelledby="upcoming-heading">
+      <div class="group-head"><h2 id="upcoming-heading">다가오는 공연</h2><span id="upcoming-count"></span></div>
+      <p class="group-empty" id="upcoming-empty" hidden>예정된 공연이 없습니다.</p>
+      <div class="records" id="upcoming-records"></div>
+    </section>
 
-
-    <section class="records" id="records-panel" role="tabpanel" aria-labelledby="filter-all" aria-live="polite" tabindex="0">
+    <section class="record-group" id="seen-group" aria-labelledby="seen-heading">
+      <div class="group-head"><h2 id="seen-heading">관람한 공연</h2><span id="seen-count"></span></div>
+      <div class="records" id="seen-records">
       <article class="record" data-status="upcoming" data-date="2026-10-04" data-series="2026 대한민국 피아노페스티벌" data-time="오후 5:00" data-venue="경기아트센터 대극장" data-lecture="프리렉처 오후 4:40 · 유윤종 음악평론가">
         <div class="record-top">
           <div class="date-block" aria-label="2026년 10월 4일 일요일">
@@ -1242,36 +1100,27 @@ details:not([open]) > :not(summary) { display: none; }
         </details>
       </article>
 
-      <div class="empty" id="empty" role="status">
-        <strong>관람 완료 기록이 아직 없음</strong>
-        공연 후 감상을 남기면 이곳에 정리됩니다.
       </div>
     </section>
 
     <p class="footnote">프로그램 · 출연진 조사 기준일 2026.10.02. 일정과 출연진은 변경될 수 있으므로 관람 전 공식 안내 확인.</p>
     </section>
 
-    <section class="view-panel" id="study-view" role="tabpanel" aria-labelledby="tab-study" hidden>
+    <section class="view-panel" id="study-view" hidden>
       <div class="study-search-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
         <input class="study-search" id="study-search" type="search" inputmode="search" autocomplete="off" aria-label="시대, 작곡가, 대표곡, 음악사 연표, 사전 항목 통합 검색" aria-controls="study-search-results" aria-expanded="false" placeholder="클래식 공부 전체 검색">
         <div class="search-results" id="study-search-results" role="listbox" hidden></div>
       </div>
 
-      <nav class="study-tabs" aria-label="클래식 공부 목차" role="tablist">
-        <button class="study-tab" type="button" role="tab" aria-selected="true" data-study-section="eras">시대와 작곡가</button>
-        <button class="study-tab" type="button" role="tab" aria-selected="false" data-study-section="dictionary">클래식 사전</button>
-      </nav>
-
-      <section class="study-panel" id="study-eras" data-study-panel="eras">
+      <section class="study-panel" id="study-eras" role="tabpanel" aria-labelledby="tab-eras" data-study-panel="eras">
         <nav class="era-tabs" id="era-tabs" aria-label="시대 바로가기"></nav>
         <div class="era-overviews" id="era-overviews"></div>
-        <div class="section-row timeline-heading-row"><h4 id="timeline-heading">음악사 연표</h4></div>
-        <p class="study-count" id="timeline-count"></p>
+        <div class="group-head timeline-head"><h2 id="timeline-heading">음악사 연표</h2><span id="timeline-count"></span></div>
         <div class="timeline-list" id="timeline-list"></div>
       </section>
 
-      <section class="study-panel" id="study-dictionary" data-study-panel="dictionary" hidden>
+      <section class="study-panel" id="study-dictionary" role="tabpanel" aria-labelledby="tab-dictionary" data-study-panel="dictionary" hidden>
         <div class="term-filters" id="dictionary-filters" aria-label="사전 분류"></div>
         <div id="dictionary-list"></div>
         <div class="term-empty" id="dictionary-empty">찾는 항목이 없습니다.</div>
@@ -1293,12 +1142,8 @@ details:not([open]) > :not(summary) { display: none; }
       var performanceView = document.getElementById('performance-view');
       var studyView = document.getElementById('study-view');
       var studyData = window.CLASSIC_STUDY_DATA;
-      var studyTabs = document.querySelectorAll('.study-tab');
       var studyPanels = document.querySelectorAll('.study-panel');
-      var filters = document.querySelectorAll('.filter');
       var records = document.querySelectorAll('.record');
-      var recordsContainer = document.getElementById('records-panel');
-      var empty = document.getElementById('empty');
       var toast = document.getElementById('toast');
       var toastTimer;
       var activeDictionaryCategory = '곡의 종류';
@@ -1353,12 +1198,21 @@ details:not([open]) > :not(summary) { display: none; }
         return link;
       }
 
+      // A real space between items lets a list wrap after the "·" separator, never before it.
+      function spaceOut(list) {
+        Array.prototype.slice.call(list.children, 1).forEach(function (item) {
+          list.insertBefore(document.createTextNode(' '), item);
+        });
+        return list;
+      }
+
       function appendLinkGroup(parent, label, items, kind) {
         if (!items.length) return;
         var block = createElement('div', 'related-block');
         block.appendChild(createElement('span', 'related-label', label));
         var links = createElement('div', 'study-link-list');
         items.forEach(function (item) { links.appendChild(createStudyLink(item, kind, item)); });
+        spaceOut(links);
         block.appendChild(links);
         parent.appendChild(block);
       }
@@ -1443,8 +1297,9 @@ details:not([open]) > :not(summary) { display: none; }
           appendList(features, era.points);
           var genres = createElement('div', 'era-genres');
           genres.appendChild(createElement('span', 'related-label', '주요 장르'));
-          var genreLinks = createElement('div', 'chip-list');
+          var genreLinks = createElement('div', 'dot-list');
           appendGenreLinks(genreLinks, era.genres);
+          spaceOut(genreLinks);
           genres.appendChild(genreLinks);
           features.appendChild(genres);
           description.appendChild(features);
@@ -1492,8 +1347,8 @@ details:not([open]) > :not(summary) { display: none; }
           var body = createElement('div', 'study-card-body');
           body.appendChild(createElement('p', 'composer-detail-name', composer.full.replace(/, \d{4}(?:경)?–(?:\d{4}|), /, ' · ')));
           body.appendChild(createElement('p', 'composer-intro', composer.summary));
-          var listening = createElement('section', 'callout');
-          listening.appendChild(createElement('h4', 'section-label', '♪ 듣기 포인트'));
+          var listening = createElement('section', 'listen-points');
+          listening.appendChild(createElement('h4', 'section-label', '듣기 포인트'));
           appendList(listening, composer.listening);
           body.appendChild(listening);
           body.appendChild(createElement('h4', 'section-label', '대표곡'));
@@ -1582,6 +1437,7 @@ details:not([open]) > :not(summary) { display: none; }
           row.appendChild(copy);
           timelineList.appendChild(row);
         });
+        document.getElementById('timeline-count').textContent = studyData.timeline.length + '개';
 
         function createDictionaryRow(name, description, category, sourceKind) {
           var row = createElement('article', 'term-row');
@@ -1609,6 +1465,7 @@ details:not([open]) > :not(summary) { display: none; }
               relatedBlock.appendChild(createElement('span', 'related-label', '함께 보기'));
               var relatedLinks = createElement('div', 'study-link-list');
               related.forEach(function (item) { relatedLinks.appendChild(createStudyLink(item.label, item.kind, item.value)); });
+              spaceOut(relatedLinks);
               relatedBlock.appendChild(relatedLinks);
               body.appendChild(relatedBlock);
             }
@@ -1691,12 +1548,7 @@ details:not([open]) > :not(summary) { display: none; }
       }
 
       function activateStudySection(section) {
-        studyTabs.forEach(function (tab) {
-          var selected = tab.getAttribute('data-study-section') === section;
-          tab.setAttribute('aria-selected', selected ? 'true' : 'false');
-          tab.tabIndex = selected ? 0 : -1;
-        });
-        studyPanels.forEach(function (panel) { panel.hidden = panel.getAttribute('data-study-panel') !== section; });
+        activatePrimaryTab(document.getElementById(section === 'dictionary' ? 'tab-dictionary' : 'tab-eras'));
       }
 
       function filterDictionary() {
@@ -1768,7 +1620,6 @@ details:not([open]) > :not(summary) { display: none; }
           activatePrimaryTab(document.getElementById('tab-performances'));
           return;
         }
-        activatePrimaryTab(document.getElementById('tab-study'));
         if (kind === 'composer' || kind === 'work') {
           var workParts = kind === 'work' ? value.split('::') : [value];
           var composer = findComposer(workParts[0]);
@@ -1994,6 +1845,7 @@ details:not([open]) > :not(summary) { display: none; }
 
       function activatePrimaryTab(button) {
         var view = button.getAttribute('data-view');
+        var section = button.getAttribute('data-study-section');
         primaryTabs.forEach(function (item) {
           var selected = item === button;
           item.setAttribute('aria-selected', selected ? 'true' : 'false');
@@ -2001,7 +1853,8 @@ details:not([open]) > :not(summary) { display: none; }
         });
         performanceView.hidden = view !== 'performances';
         studyView.hidden = view !== 'study';
-        storageSet('classic-view', view);
+        if (section) studyPanels.forEach(function (panel) { panel.hidden = panel.getAttribute('data-study-panel') !== section; });
+        storageSet('classic-view', section || view);
       }
 
       primaryTabs.forEach(function (button, index) {
@@ -2023,26 +1876,6 @@ details:not([open]) > :not(summary) { display: none; }
           event.preventDefault();
           primaryTabs[nextIndex].focus();
           activatePrimaryTab(primaryTabs[nextIndex]);
-        });
-      });
-
-      studyTabs.forEach(function (button, index) {
-        button.tabIndex = button.getAttribute('aria-selected') === 'true' ? 0 : -1;
-        button.addEventListener('click', function () {
-          closeStudySearch();
-          activateStudySection(button.getAttribute('data-study-section'));
-          updateEraScrollSpy();
-        });
-        button.addEventListener('keydown', function (event) {
-          var nextIndex = index;
-          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % studyTabs.length;
-          else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + studyTabs.length) % studyTabs.length;
-          else if (event.key === 'Home') nextIndex = 0;
-          else if (event.key === 'End') nextIndex = studyTabs.length - 1;
-          else return;
-          event.preventDefault();
-          studyTabs[nextIndex].focus();
-          activateStudySection(studyTabs[nextIndex].getAttribute('data-study-section'));
         });
       });
 
@@ -2074,7 +1907,7 @@ details:not([open]) > :not(summary) { display: none; }
       document.addEventListener('keydown', function (event) {
         if (event.key !== '/' || event.target.closest('input, textarea')) return;
         event.preventDefault();
-        activatePrimaryTab(document.getElementById('tab-study'));
+        if (studyView.hidden) activateStudySection('eras');
         studySearch.focus();
       });
       document.addEventListener('click', function (event) {
@@ -2098,63 +1931,20 @@ details:not([open]) > :not(summary) { display: none; }
         });
       });
 
-      function sortRecords(value) {
-        var sorted = Array.prototype.slice.call(records).sort(function (a, b) {
-          var aStatus = a.getAttribute('data-status');
-          var bStatus = b.getAttribute('data-status');
-          var aDate = a.getAttribute('data-date') || '';
-          var bDate = b.getAttribute('data-date') || '';
-
-          if (aStatus === bStatus) {
-            return aStatus === 'upcoming' ? aDate.localeCompare(bDate) : bDate.localeCompare(aDate);
-          }
-          if (value === 'all') {
-            if (aStatus === 'upcoming') return -1;
-            if (bStatus === 'upcoming') return 1;
-          }
-          return bDate.localeCompare(aDate);
-        });
-        sorted.forEach(function (record) { recordsContainer.insertBefore(record, empty); });
+      function placeRecords() {
+        var upcoming = Array.prototype.filter.call(records, function (record) { return record.getAttribute('data-status') === 'upcoming'; });
+        var seen = Array.prototype.filter.call(records, function (record) { return record.getAttribute('data-status') === 'seen'; });
+        upcoming.sort(function (a, b) { return a.getAttribute('data-date').localeCompare(b.getAttribute('data-date')); });
+        seen.sort(function (a, b) { return b.getAttribute('data-date').localeCompare(a.getAttribute('data-date')); });
+        var upcomingList = document.getElementById('upcoming-records');
+        var seenList = document.getElementById('seen-records');
+        upcoming.forEach(function (record) { upcomingList.appendChild(record); });
+        seen.forEach(function (record) { seenList.appendChild(record); });
+        document.getElementById('upcoming-count').textContent = upcoming.length ? String(upcoming.length) : '';
+        document.getElementById('seen-count').textContent = String(seen.length);
+        document.getElementById('upcoming-empty').hidden = upcoming.length > 0;
+        document.getElementById('seen-group').hidden = !seen.length;
       }
-
-      function activateFilter(button) {
-        var value = button.getAttribute('data-filter');
-        filters.forEach(function (item) {
-          var selected = item === button;
-          item.setAttribute('aria-selected', selected ? 'true' : 'false');
-          item.tabIndex = selected ? 0 : -1;
-        });
-        recordsContainer.setAttribute('aria-labelledby', button.id);
-        sortRecords(value);
-
-        var visible = 0;
-        records.forEach(function (record) {
-          var show = value === 'all' || record.getAttribute('data-status') === value;
-          record.hidden = !show;
-          if (show) visible += 1;
-        });
-        empty.style.display = visible ? 'none' : 'block';
-        if (!visible) {
-          empty.querySelector('strong').textContent = value === 'upcoming' ? '예정된 공연이 없음' : value === 'seen' ? '관람 완료 기록이 아직 없음' : '공연 기록이 없음';
-          empty.lastChild.nodeValue = value === 'seen' ? ' 공연 후 감상을 남기면 이곳에 정리됩니다.' : '';
-        }
-      }
-
-      filters.forEach(function (button, index) {
-        button.tabIndex = button.getAttribute('aria-selected') === 'true' ? 0 : -1;
-        button.addEventListener('click', function () { activateFilter(button); });
-        button.addEventListener('keydown', function (event) {
-          var nextIndex = index;
-          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % filters.length;
-          else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + filters.length) % filters.length;
-          else if (event.key === 'Home') nextIndex = 0;
-          else if (event.key === 'End') nextIndex = filters.length - 1;
-          else return;
-          event.preventDefault();
-          filters[nextIndex].focus();
-          activateFilter(filters[nextIndex]);
-        });
-      });
 
       function getTodayInKorea() {
         var parts = new Intl.DateTimeFormat('en-CA', {
@@ -2369,7 +2159,6 @@ details:not([open]) > :not(summary) { display: none; }
 
       function updateRecordStatuses() {
         var today = getTodayInKorea();
-        var counts = { all: records.length, upcoming: 0, seen: 0 };
 
         var upcomingRecords = Array.prototype.slice.call(records).filter(function (record) { return record.getAttribute('data-date') >= today; }).sort(function (a, b) { return a.getAttribute('data-date').localeCompare(b.getAttribute('data-date')); });
         records.forEach(function (record) {
@@ -2386,29 +2175,13 @@ details:not([open]) > :not(summary) { display: none; }
           record.querySelector('.status').textContent = statusLabel;
           record.querySelector('.note-detail').hidden = status !== 'seen';
           if (record.calendarButton) record.calendarButton.hidden = status !== 'upcoming';
-          counts[status] += 1;
         });
-
-        var nextUp = document.getElementById('next-up');
-        nextUp.textContent = '';
-        if (upcomingRecords.length) {
-          var next = upcomingRecords[0];
-          nextUp.appendChild(document.createTextNode('다음 공연 ' + next.querySelector('.status').textContent));
-          nextUp.appendChild(createElement('span', '', next.querySelector('h3').textContent));
-        }
-        nextUp.hidden = !upcomingRecords.length;
         updateStats();
-
-        filters.forEach(function (button) {
-          var value = button.getAttribute('data-filter');
-          button.textContent = button.getAttribute('data-label') + ' ' + counts[value];
-        });
       }
 
       function refreshTemporalState() {
         updateRecordStatuses();
-        var activeFilter = document.querySelector('.filter[aria-selected="true"]') || filters[0];
-        activateFilter(activeFilter);
+        placeRecords();
       }
 
       refreshTemporalState();
@@ -2452,8 +2225,10 @@ details:not([open]) > :not(summary) { display: none; }
       var hashComposer = studyData.composers.filter(function (composer) { return composerTargetId(composer.short) === initialHash; })[0];
       if (hashComposer) {
         navigateStudy('composer', hashComposer.short);
-      } else if (initialHash === 'study' || (!initialHash && storageGet('classic-view') === 'study')) {
-        activatePrimaryTab(document.getElementById('tab-study'));
+      } else {
+        var savedView = initialHash || storageGet('classic-view');
+        if (savedView === 'study' || savedView === 'eras') activateStudySection('eras');
+        else if (savedView === 'dictionary') activateStudySection('dictionary');
       }
 
       function showToast(message) {
