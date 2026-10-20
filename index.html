@@ -34,6 +34,7 @@
   --star: #B7791F;
   --shadow: 0 6px 20px rgba(31, 27, 24, .12);
   --radius: 16px;
+  --rule: #CDBFAE;
   --pad: 20px;
 }
 @media (prefers-color-scheme: dark) {
@@ -51,6 +52,7 @@
     --header-bg: rgba(23, 20, 18, .86);
     --star: #E8B04B;
     --shadow: 0 6px 20px rgba(0, 0, 0, .4);
+    --rule: #4A413A;
   }
 }
 :root[data-theme="dark"] {
@@ -67,6 +69,7 @@
   --header-bg: rgba(23, 20, 18, .86);
   --star: #E8B04B;
   --shadow: 0 6px 20px rgba(0, 0, 0, .4);
+  --rule: #4A413A;
 }
 
 * { box-sizing: border-box; }
@@ -101,7 +104,7 @@ button { cursor: pointer; }
 .wrap {
   width: min(100%, 720px);
   margin: 0 auto;
-  padding: 0 16px calc(104px + env(safe-area-inset-bottom));
+  padding: 0 16px calc(96px + env(safe-area-inset-bottom));
   overflow-x: clip;
 }
 .view-panel { min-width: 0; }
@@ -113,24 +116,36 @@ button { cursor: pointer; }
   bottom: 0;
   left: 0;
   z-index: 6;
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+  padding: 0 16px env(safe-area-inset-bottom);
   border-top: 1px solid var(--line);
-  background: var(--header-bg);
-  -webkit-backdrop-filter: saturate(1.4) blur(12px);
-  backdrop-filter: saturate(1.4) blur(12px);
+  background: var(--card);
 }
-.tab-bar .primary-tabs { width: min(100%, 688px); margin: 0 auto; }
 .brand-row {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 20px;
+  padding: 56px 0 0;
+}
+.brand-row .icon-button { position: absolute; top: 10px; right: 0; width: 36px; height: 36px; font-size: 16px; }
+.brand h1 {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0 0 24px;
-  padding: 20px 0 0;
+  gap: 16px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
 }
-.brand { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
-.brand h1 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
-.brand span { color: var(--muted); font-size: 14px; }
+.brand h1::before,
+.brand h1::after {
+  content: "";
+  width: 40px;
+  height: 5px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
 .icon-button {
   display: inline-grid;
   width: 40px;
@@ -147,28 +162,25 @@ button { cursor: pointer; }
 .primary-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  margin: 0;
-  padding: 4px;
-  border-radius: 999px;
-  background: var(--subtle);
+  width: min(100%, 560px);
+  margin: 0 auto;
 }
 .primary-tab {
-  min-height: 44px;
-  padding: 8px 16px;
+  display: flex;
+  min-height: 58px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 4px;
   border: 0;
-  border-radius: 999px;
-  background: transparent;
+  background: none;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
-.primary-tab[aria-selected="true"] {
-  background: var(--card);
-  color: var(--text);
-  font-weight: 700;
-  box-shadow: 0 1px 3px rgba(31, 27, 24, .08);
-}
+.primary-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.primary-tab[aria-selected="true"] { color: var(--accent); }
 
 .filters,
 .era-filters {
@@ -331,18 +343,16 @@ summary {
 }
 summary::-webkit-details-marker { display: none; }
 summary::marker { content: ""; }
-summary::after {
+summary::after {   /* 펼침 표시: ＋, 펼치면 － */
   content: "";
-  width: 7px;
-  height: 7px;
-  margin: 0 4px 4px 0;
-  border-right: 1.5px solid var(--muted);
-  border-bottom: 1.5px solid var(--muted);
-  transform: rotate(45deg);
-  transition: transform .16s ease;
+  width: 11px;
+  height: 11px;
+  margin-right: 2px;
+  background: linear-gradient(var(--muted), var(--muted)) center / 11px 1.5px no-repeat,
+              linear-gradient(var(--muted), var(--muted)) center / 1.5px 11px no-repeat;
+  transition: background-size .16s ease;
 }
-details[open] > summary::after { margin: 4px 4px 0 0; transform: rotate(-135deg); }
-summary:hover::after { border-color: var(--accent); }
+details[open] > summary::after { background-size: 11px 1.5px, 1.5px 0; }
 details:not([open]) > :not(summary) { display: none; }
 .performer-detail { border-top: 1px solid var(--line); }
 .performer-detail:first-child { border-top: 0; }
@@ -415,7 +425,7 @@ details:not([open]) > :not(summary) { display: none; }
 .study-search {
   width: 100%;
   min-height: 48px;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 42px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   outline: 0;
@@ -424,6 +434,7 @@ details:not([open]) > :not(summary) { display: none; }
   font-size: 16px;
 }
 .study-search::placeholder { color: var(--muted); }
+.search-icon { position: absolute; top: 14px; left: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; pointer-events: none; }
 .study-search:focus { border-color: var(--accent); }
 .search-results {
   position: absolute;
@@ -829,7 +840,7 @@ details:not([open]) > :not(summary) { display: none; }
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(84px + env(safe-area-inset-bottom));
+  bottom: calc(72px + env(safe-area-inset-bottom));
   z-index: 8;
   transform: translateX(-50%);
   padding: 8px 16px;
@@ -871,7 +882,6 @@ details:not([open]) > :not(summary) { display: none; }
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
-.stat { padding: 14px 16px; }
 .term-row { padding: 16px var(--pad); }
 .era-genres .chip-list > * {
   display: inline-flex;
@@ -893,16 +903,16 @@ details:not([open]) > :not(summary) { display: none; }
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
   margin: 0 0 16px;
-}
-.stat {
-  padding: 12px;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
 }
-.stat strong { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat { padding: 14px 16px; border-left: 1px solid var(--line); }
+.stat:first-child { border-left: 0; }
+.stat strong { display: block; font-size: 22px; font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.stat strong small { margin-left: 2px; color: var(--muted); font-size: 14px; font-weight: 500; }
 .stat span { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; }
 .next-up {
   display: flex;
@@ -976,7 +986,7 @@ details:not([open]) > :not(summary) { display: none; }
 .to-top {
   position: fixed;
   right: max(16px, calc(50% - 360px + 16px));
-  bottom: calc(84px + env(safe-area-inset-bottom));
+  bottom: calc(72px + env(safe-area-inset-bottom));
   z-index: 7;
   box-shadow: var(--shadow);
   opacity: 0;
@@ -990,8 +1000,8 @@ details:not([open]) > :not(summary) { display: none; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 440px) {
-  .brand-row { padding-top: 14px; }
-  .stat strong { font-size: 22px; }
+  .brand-row { padding-top: 52px; }
+  .stat { padding: 12px 14px; }
   .record-top { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
   .date-block { padding-right: 12px; }
   .term-row { grid-template-columns: 1fr; gap: 4px; }
@@ -1009,13 +1019,13 @@ details:not([open]) > :not(summary) { display: none; }
 <body>
   <main class="wrap">
     <div class="brand-row">
-      <div class="brand"><h1>클래식</h1><span>공연 기록 · 공부 노트</span></div>
+      <div class="brand"><h1>클래식</h1></div>
       <button class="icon-button" id="theme-toggle" type="button" aria-label="화면 테마 바꾸기">◐</button>
     </div>
     <nav class="tab-bar" id="tab-bar" aria-label="클래식 기록 메뉴">
       <div class="primary-tabs" role="tablist">
-        <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances">공연 기록</button>
-        <button class="primary-tab" id="tab-study" type="button" role="tab" aria-controls="study-view" aria-selected="false" data-view="study">클래식 공부</button>
+        <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2.2"/></svg><span>공연 기록</span></button>
+        <button class="primary-tab" id="tab-study" type="button" role="tab" aria-controls="study-view" aria-selected="false" data-view="study"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>클래식 공부</span></button>
       </div>
     </nav>
 
@@ -1243,6 +1253,7 @@ details:not([open]) > :not(summary) { display: none; }
 
     <section class="view-panel" id="study-view" role="tabpanel" aria-labelledby="tab-study" hidden>
       <div class="study-search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
         <input class="study-search" id="study-search" type="search" inputmode="search" autocomplete="off" aria-label="시대, 작곡가, 대표곡, 음악사 연표, 사전 항목 통합 검색" aria-controls="study-search-results" aria-expanded="false" placeholder="클래식 공부 전체 검색">
         <div class="search-results" id="study-search-results" role="listbox" hidden></div>
       </div>
@@ -2328,9 +2339,11 @@ details:not([open]) > :not(summary) { display: none; }
         record.calendarButton = buildCalendarButton(record);
       });
 
-      function appendStat(parent, value, label) {
+      function appendStat(parent, value, unit, label) {
         var stat = createElement('div', 'stat');
-        stat.appendChild(createElement('strong', '', String(value)));
+        var number = createElement('strong', '', String(value));
+        number.appendChild(createElement('small', '', unit));
+        stat.appendChild(number);
         stat.appendChild(createElement('span', '', label));
         parent.appendChild(stat);
       }
@@ -2349,9 +2362,9 @@ details:not([open]) > :not(summary) { display: none; }
         var notes = readNotes();
         var noteCount = Array.prototype.filter.call(records, function (record) { return notes[recordKey(record)]; }).length;
         stats.textContent = '';
-        appendStat(stats, pieces, '들은 작품');
-        appendStat(stats, Object.keys(performers).length, '만난 연주자');
-        appendStat(stats, noteCount, '감상 노트');
+        appendStat(stats, pieces, '곡', '들은 작품');
+        appendStat(stats, Object.keys(performers).length, '명', '만난 연주자');
+        appendStat(stats, noteCount, '개', '감상 노트');
       }
 
       function updateRecordStatuses() {
