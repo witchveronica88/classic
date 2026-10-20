@@ -490,7 +490,6 @@ details:not([open]) > :not(summary) { display: none; }
 .composer-name-line { display: contents; }
 .composer-name-line strong { grid-area: name; min-width: 0; color: var(--text); font-size: var(--fs-m); font-weight: 700; }
 .nested-composer > summary::after { grid-area: plus; justify-self: end; }
-.nested-composer[open] .composer-name-line strong { color: var(--accent); }
 .composer-years { grid-area: years; justify-self: end; color: var(--muted); font-size: var(--fs-s); font-weight: 400; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .study-card-body { padding: 12px 0 16px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
@@ -605,7 +604,6 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .term-summary { min-width: 0; }
 .term-name { font-size: var(--fs-m); font-weight: 700; }
-.term-row[open] .term-name { color: var(--accent); }
 .term-body { min-width: 0; padding: 12px 0 16px; line-height: 1.7; }
 .term-definition { margin: 0; color: var(--text); font-weight: 700; }
 .term-detail { margin: 8px 0 0; color: var(--text); }
@@ -679,8 +677,6 @@ details:not([open]) > :not(summary) { display: none; }
 .piece-body { padding: 12px 0 16px; }
 .piece-copy p,
 .soloist-info p { color: var(--text); line-height: 1.7; }
-.performer-detail[open] .performer-name,
-.piece-main[open] .piece-title { color: var(--accent); }
 /* 펼친 줄의 제목은 내용을 읽는 동안 위에 붙어 있다.
    공부 화면은 탭 줄(56px) 아래, 안쪽 항목은 바깥 제목 줄(52px) 아래에 붙는다. */
 #performance-view { --stick: 0px; }
@@ -709,8 +705,16 @@ details:not([open]) > :not(summary) { display: none; }
   box-shadow: 0 1px 0 var(--line);
 }
 .record > details[open] details[open] > summary,
-.fold-card > details[open] details[open] > summary { box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line); }
+.fold-card > details[open] details[open] > summary,
+.fold-list .term-row[open] > summary { box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line); }
+/* 사전 카드에 바로 나오는 용어 줄은 카드의 첫 단계라서, 펼친 내용까지 카드 왼쪽 끝에 컬러바를 이어 세운다 */
 .fold-list .term-row[open] > summary { top: var(--stick); }
+.fold-list .term-row[open] > .term-body {
+  margin: 0 calc(-1 * var(--pad));
+  padding-right: var(--pad);
+  padding-left: var(--pad);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-s); font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
