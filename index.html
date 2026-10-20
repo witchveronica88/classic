@@ -99,29 +99,32 @@ button { cursor: pointer; }
 .wrap {
   width: min(100%, 720px);
   margin: 0 auto;
-  padding: 0 16px calc(32px + env(safe-area-inset-bottom));
+  padding: 0 16px calc(104px + env(safe-area-inset-bottom));
   overflow-x: clip;
 }
 .view-panel { min-width: 0; }
 
-/* Header */
-.app-header {
-  position: sticky;
-  top: 0;
+/* Bottom tab bar */
+.tab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 6;
-  margin: 0 -16px 24px;
-  padding: 8px 16px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
   background: var(--header-bg);
   -webkit-backdrop-filter: saturate(1.4) blur(12px);
   backdrop-filter: saturate(1.4) blur(12px);
 }
-.app-header.is-stuck { border-bottom: 1px solid var(--line); }
+.tab-bar .primary-tabs { width: min(100%, 688px); margin: 0 auto; }
 .brand-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 20px 0 4px;
+  margin: 0 0 24px;
+  padding: 20px 0 0;
 }
 .brand { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .brand h1 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
@@ -477,7 +480,7 @@ details:not([open]) > :not(summary) { display: none; }
 .timeline-heading-row { margin-top: 24px; }
 .era-tabs {
   position: sticky;
-  top: var(--header-h, 120px);
+  top: 0;
   z-index: 4;
   display: flex;
   gap: 8px;
@@ -768,7 +771,7 @@ details:not([open]) > :not(summary) { display: none; }
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(16px + env(safe-area-inset-bottom));
+  bottom: calc(84px + env(safe-area-inset-bottom));
   z-index: 8;
   transform: translateX(-50%);
   padding: 8px 16px;
@@ -875,15 +878,15 @@ details:not([open]) > :not(summary) { display: none; }
 
 .search-result.is-active { background: var(--accent-soft); }
 .search-result mark { background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.era-group, .composer-card, .work-row, #timeline-heading { scroll-margin-top: calc(var(--header-h, 120px) + 72px); }
-.term-row, .reading-card, .records > .record { scroll-margin-top: calc(var(--header-h, 120px) + 16px); }
+.era-group, .composer-card, .work-row, #timeline-heading { scroll-margin-top: 72px; }
+.term-row, .reading-card, .records > .record { scroll-margin-top: 16px; }
 .flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
 
 .to-top {
   position: fixed;
   right: max(16px, calc(50% - 360px + 16px));
-  bottom: calc(16px + env(safe-area-inset-bottom));
+  bottom: calc(84px + env(safe-area-inset-bottom));
   z-index: 7;
   box-shadow: var(--shadow);
   opacity: 0;
@@ -919,12 +922,12 @@ details:not([open]) > :not(summary) { display: none; }
       <div class="brand"><h1>클래식</h1><span>공연 기록 · 공부 노트</span></div>
       <button class="icon-button" id="theme-toggle" type="button" aria-label="화면 테마 바꾸기">◐</button>
     </div>
-    <header class="app-header" id="app-header">
-      <nav class="primary-tabs" aria-label="클래식 기록 메뉴" role="tablist">
+    <nav class="tab-bar" id="tab-bar" aria-label="클래식 기록 메뉴">
+      <div class="primary-tabs" role="tablist">
         <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances">공연 기록</button>
         <button class="primary-tab" id="tab-study" type="button" role="tab" aria-controls="study-view" aria-selected="false" data-view="study">클래식 공부</button>
-      </nav>
-    </header>
+      </div>
+    </nav>
 
     <section class="view-panel" id="performance-view" role="tabpanel" aria-labelledby="tab-performances">
     <div class="stats" id="stats" aria-label="관람 요약"></div>
@@ -1180,7 +1183,6 @@ details:not([open]) > :not(summary) { display: none; }
       var toast = document.getElementById('toast');
       var toastTimer;
       var activeDictionaryCategory = '곡의 종류';
-      var appHeader = document.getElementById('app-header');
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function storageGet(key) {
@@ -1893,7 +1895,7 @@ details:not([open]) > :not(summary) { display: none; }
       function updateEraScrollSpy() {
         var erasPanel = document.getElementById('study-eras');
         if (studyView.hidden || erasPanel.hidden) return;
-        var offset = appHeader.offsetHeight + eraTabsNav.offsetHeight + 24;
+        var offset = eraTabsNav.offsetHeight + 24;
         var current = studyData.eras[0].name;
         document.querySelectorAll('[data-era-card]').forEach(function (card) {
           if (card.getBoundingClientRect().top <= offset) current = card.getAttribute('data-era-card');
@@ -2378,18 +2380,11 @@ details:not([open]) > :not(summary) { display: none; }
         window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
       });
 
-      function syncHeaderHeight() {
-        document.documentElement.style.setProperty('--header-h', appHeader.offsetHeight + 'px');
-      }
-      syncHeaderHeight();
-      window.addEventListener('resize', syncHeaderHeight);
-
       var scrollFrame;
       window.addEventListener('scroll', function () {
         if (scrollFrame) return;
         scrollFrame = window.requestAnimationFrame(function () {
           scrollFrame = 0;
-          appHeader.classList.toggle('is-stuck', window.scrollY > 0 && appHeader.getBoundingClientRect().top <= 0);
           toTop.classList.toggle('show', window.scrollY > 640);
           updateEraScrollSpy();
         });
