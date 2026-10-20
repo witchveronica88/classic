@@ -18,12 +18,13 @@
   --bg: #F3F0EB;
   --card: #FFFDF9;
   --subtle: #EEE9E1;
-  --disclosure-bg: #F7F3EE;
+  --disclosure-bg: #F4EEE6;
   --text: #1F1B18;
   --muted: #5F574F;
   --line: #E2DAD0;
   --accent: #7A2638;
   --accent-soft: #F3E3E6;
+  --accent-line: rgba(122, 38, 56, .35);
   --star: #B7791F;
   --shadow: 0 6px 20px rgba(31, 27, 24, .12);
   --radius: 16px;
@@ -41,12 +42,13 @@
     --bg: #171412;
     --card: #221E1B;
     --subtle: #2B2622;
-    --disclosure-bg: #26211E;
+    --disclosure-bg: #2A2521;
     --text: #F1ECE6;
     --muted: #B3A99F;
     --line: #3A332E;
     --accent: #E59AAA;
     --accent-soft: #43262D;
+    --accent-line: rgba(229, 154, 170, .45);
     --star: #E8B04B;
     --shadow: 0 6px 20px rgba(0, 0, 0, .4);
     --rule: #4A413A;
@@ -662,15 +664,21 @@ details:not([open]) > :not(summary) { display: none; }
 /* Shared layout: every card uses --radius and --pad; nested lists are divider rows. */
 .record-top { padding: var(--pad); }
 .detail-body { padding: 0 var(--pad) var(--pad); }
-.record > details > summary {
+.record > details > summary,
+.fold-card > details > summary {
   min-height: 52px;
   padding: 14px var(--pad);
   color: var(--text);
   font-size: var(--fs-m);
   font-weight: 700;
 }
-.record > details > summary:hover { background: var(--disclosure-bg); }
-.record > details[open] > summary { background: var(--disclosure-bg); }
+/* ＋를 펼친 부분은 줄과 안쪽 전체에 옅은 배경을 깔아 어디까지인지 보이게 한다 */
+.record > details > summary:hover,
+.fold-card > details > summary:hover,
+.record > details[open],
+.fold-card > details[open],
+.record > details[open] > summary,
+.fold-card > details[open] > summary { background: var(--disclosure-bg); }
 .program-detail .detail-body { padding-top: 4px; }
 .piece-list { border-radius: 0; }
 .performer-detail > summary,
@@ -687,6 +695,14 @@ details:not([open]) > :not(summary) { display: none; }
 .soloist-info p { color: var(--text); line-height: 1.7; }
 .performer-detail[open] .performer-name,
 .piece-main[open] .piece-title { color: var(--accent); }
+/* 한 번 더 펼친 항목은 상자 대신 왼쪽 강조선으로 범위를 보여 준다 */
+.performer-detail[open] > p,
+.piece-main[open] > .piece-body,
+.nested-composer[open] > .study-card-body,
+.term-row[open] > .term-body {
+  padding-left: 14px;
+  border-left: 2px solid var(--accent-line);
+}
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-s); font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
