@@ -10,12 +10,6 @@
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="icon.svg">
   <title>클래식</title>
-  <script>
-    try {
-      var savedTheme = localStorage.getItem('classic-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
-    } catch (error) {}
-  </script>
   <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
 
@@ -30,15 +24,19 @@
   --line: #E2DAD0;
   --accent: #7A2638;
   --accent-soft: #F3E3E6;
-  --header-bg: rgba(243, 240, 235, .86);
   --star: #B7791F;
   --shadow: 0 6px 20px rgba(31, 27, 24, .12);
   --radius: 16px;
   --rule: #CDBFAE;
   --pad: 20px;
+  /* 글자 크기는 네 단계만 쓴다: 보조 14 · 본문 16 · 제목 18 · 큰 제목 22 */
+  --fs-sm: 14px;
+  --fs-body: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root {
     color-scheme: dark;
     --bg: #171412;
     --card: #221E1B;
@@ -49,27 +47,10 @@
     --line: #3A332E;
     --accent: #E59AAA;
     --accent-soft: #43262D;
-    --header-bg: rgba(23, 20, 18, .86);
     --star: #E8B04B;
     --shadow: 0 6px 20px rgba(0, 0, 0, .4);
     --rule: #4A413A;
   }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #171412;
-  --card: #221E1B;
-  --subtle: #2B2622;
-  --disclosure-bg: #26211E;
-  --text: #F1ECE6;
-  --muted: #B3A99F;
-  --line: #3A332E;
-  --accent: #E59AAA;
-  --accent-soft: #43262D;
-  --header-bg: rgba(23, 20, 18, .86);
-  --star: #E8B04B;
-  --shadow: 0 6px 20px rgba(0, 0, 0, .4);
-  --rule: #4A413A;
 }
 
 * { box-sizing: border-box; }
@@ -89,7 +70,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: Pretendard, "Apple SD Gothic Neo", sans-serif;
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 400;
   line-height: 1.6;
   letter-spacing: -0.01em;
@@ -121,28 +102,27 @@ button { cursor: pointer; }
   background: var(--card);
 }
 .brand-row {
-  position: relative;
   display: flex;
   justify-content: center;
-  margin: 0 0 20px;
-  padding: 56px 0 0;
+  margin: 0 0 12px;
+  padding: 12px 0 0;
 }
-.brand-row .icon-button { position: absolute; top: 10px; right: 0; width: 36px; height: 36px; font-size: 16px; }
 .brand h1 {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
 }
 .brand h1::before,
 .brand h1::after {
   content: "";
-  width: 40px;
-  height: 5px;
+  width: 28px;
+  height: 4px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
@@ -156,7 +136,7 @@ button { cursor: pointer; }
   border-radius: 999px;
   background: var(--card);
   color: var(--text);
-  font-size: 18px;
+  font-size: var(--fs-lg);
   line-height: 1;
 }
 .primary-tabs {
@@ -176,7 +156,7 @@ button { cursor: pointer; }
   border: 0;
   background: none;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .primary-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -220,13 +200,13 @@ button { cursor: pointer; }
 .date-block .month,
 .date-block .weekday {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   line-height: 1.35;
 }
 .date-block .day {
   display: block;
   font-family: inherit;
-  font-size: 32px;
+  font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.35;
 }
@@ -239,7 +219,7 @@ button { cursor: pointer; }
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   line-height: 1.35;
 }
@@ -247,32 +227,32 @@ button { cursor: pointer; }
 .record[data-status="seen"] .record-rating { margin-left: 0; }
 .record h3 {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.35;
 }
 .place {
   margin: 8px 0 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 .program-credits { margin: 0; }
 .record-top + details > summary { border-top: 0; }
 .program-detail .detail-body { padding-top: 12px; }
 .piece-list { overflow: hidden; border-radius: 8px; }
-.program-detail .composer-link { margin-top: 4px; font-size: 14px; }
+.program-detail .composer-link { margin-top: 4px; font-size: var(--fs-sm); }
 .program-detail .composer-link::after { content: " →"; }
 .summary-copy { display: flex; min-width: 0; align-items: baseline; gap: 8px; }
 .summary-copy > span:first-child { flex: 0 0 auto; }
-.summary-meta { min-width: 0; overflow: hidden; color: var(--muted); font-size: 14px; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+.summary-meta { min-width: 0; overflow: hidden; color: var(--muted); font-size: var(--fs-sm); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 .piece { border-top: 1px solid var(--line); }
 .piece:first-of-type { border-top: 0; }
 .piece-body { padding: 12px 16px 16px; }
 .piece-copy { display: grid; gap: 12px; }
-.piece-copy p { margin: 0; color: var(--muted); font-family: inherit; font-size: 16px; }
+.piece-copy p { margin: 0; color: var(--muted); font-family: inherit; font-size: var(--fs-body); }
 .soloist-info { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-.soloist-info h4 { margin: 0 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
-.soloist-info p { margin: 0; color: var(--muted); font-family: inherit; font-size: 16px; }
+.soloist-info h4 { margin: 0 0 8px; font-size: var(--fs-body); font-weight: 700; line-height: 1.35; }
+.soloist-info p { margin: 0; color: var(--muted); font-family: inherit; font-size: var(--fs-body); }
 
 /* Every disclosure uses the same row and arrow. */
 details { border-top: 1px solid var(--line); }
@@ -286,7 +266,7 @@ summary {
   padding: 12px 16px;
   background: var(--disclosure-bg);
   color: var(--text);
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 700;
   line-height: 1.35;
   list-style: none;
@@ -313,16 +293,16 @@ details:not([open]) > :not(summary) { display: none; }
   padding: 12px 16px 16px;
   color: var(--muted);
   font-family: inherit;
-  font-size: 16px;
+  font-size: var(--fs-body);
 }
 .piece-performer { display: flex; }
 .piece-performer::after { margin-left: auto; }
-.piece-performer .role-label { margin-right: 0; color: var(--muted); font-size: 14px; font-weight: 400; }
+.piece-performer .role-label { margin-right: 0; color: var(--muted); font-size: var(--fs-sm); font-weight: 400; }
 .piece-performer .role-label::after { content: " · "; }
-.piece-performer .performer-name { color: var(--text); font-size: 16px; font-weight: 700; }
+.piece-performer .performer-name { color: var(--text); font-size: var(--fs-body); font-weight: 700; }
 .piece-summary-copy { min-width: 0; }
-.piece-title { display: block; font-size: 16px; font-weight: 700; }
-.piece-credit { display: block; margin-top: 4px; color: var(--muted); font-size: 14px; font-weight: 400; }
+.piece-title { display: block; font-size: var(--fs-body); font-weight: 700; }
+.piece-credit { display: block; margin-top: 4px; color: var(--muted); font-size: var(--fs-sm); font-weight: 400; }
 .record > details > summary { padding: 12px 16px; border-top: 1px solid var(--line); background: var(--card); color: var(--muted); font-weight: 600; }
 .record > details[open] > summary,
 .record > details > summary:hover { color: var(--text); }
@@ -332,7 +312,7 @@ details:not([open]) > :not(summary) { display: none; }
 .detail-body { padding: 0 16px 16px; }
 .info-detail > summary { padding-left: 0; padding-right: 0; }
 .info-section { padding-top: 16px; }
-.info-section h4 { margin: 0 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.info-section h4 { margin: 0 0 8px; font-size: var(--fs-body); font-weight: 700; line-height: 1.35; }
 .info-list { margin: 0; padding-left: 16px; color: var(--muted); }
 .info-list li + li { margin-top: 4px; }
 .booking {
@@ -344,8 +324,8 @@ details:not([open]) > :not(summary) { display: none; }
   border-bottom: 1px solid var(--line);
 }
 .booking p { margin: 0; color: var(--muted); }
-.booking strong { display: block; color: var(--text); font-size: 16px; }
-.booking span { display: block; margin-top: 4px; font-size: 14px; overflow-wrap: anywhere; }
+.booking strong { display: block; color: var(--text); font-size: var(--fs-body); }
+.booking span { display: block; margin-top: 4px; font-size: var(--fs-sm); overflow-wrap: anywhere; }
 .copy {
   min-height: 44px;
   padding: 8px 16px;
@@ -353,10 +333,10 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: 999px;
   background: var(--card);
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
-.caveat { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+.caveat { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-sm); }
 .prep-list { display: grid; gap: 0; }
 .prep-link {
   display: grid;
@@ -368,9 +348,9 @@ details:not([open]) > :not(summary) { display: none; }
   text-decoration: none;
 }
 .prep-link:first-child { border-top: 0; }
-.prep-link strong { font-size: 16px; font-weight: 700; }
+.prep-link strong { font-size: var(--fs-body); font-weight: 700; }
 .prep-link strong::after { content: " ↗"; }
-.prep-link span { color: var(--muted); font-size: 14px; }
+.prep-link span { color: var(--muted); font-size: var(--fs-sm); }
 
 /* Study navigation */
 .study-search-wrap { position: relative; z-index: 5; margin: 0 0 16px; }
@@ -383,7 +363,7 @@ details:not([open]) > :not(summary) { display: none; }
   outline: 0;
   background: var(--card);
   color: var(--text);
-  font-size: 16px;
+  font-size: var(--fs-body);
 }
 .study-search::placeholder { color: var(--muted); }
 .search-icon { position: absolute; top: 14px; left: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; pointer-events: none; }
@@ -415,14 +395,14 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .search-result::after { content: none; }
 .search-result:first-child { border-top: 0; }
-.search-kind { color: var(--accent); font-size: 14px; font-weight: 700; }
-.search-copy strong { display: block; font-size: 16px; font-weight: 700; }
-.search-copy span { display: block; color: var(--muted); font-size: 14px; }
+.search-kind { color: var(--accent); font-size: var(--fs-sm); font-weight: 700; }
+.search-copy strong { display: block; font-size: var(--fs-body); font-weight: 700; }
+.search-copy span { display: block; color: var(--muted); font-size: var(--fs-sm); }
 .search-empty, .term-empty { margin: 0; padding: 24px 16px; color: var(--muted); text-align: center; }
 /* Section headings outside cards (공연 묶음, 음악사 연표) */
 .group-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; }
-.group-head h2 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.35; }
-.group-head span { color: var(--muted); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.group-head h2 { margin: 0; font-size: var(--fs-lg); font-weight: 700; line-height: 1.35; }
+.group-head span { color: var(--muted); font-size: var(--fs-body); font-weight: 700; font-variant-numeric: tabular-nums; }
 .record-group + .record-group { margin-top: 32px; }
 .group-empty {
   margin: 0;
@@ -460,7 +440,7 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: 999px;
   background: var(--card);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .era-tab[aria-current="true"],
@@ -485,15 +465,15 @@ details:not([open]) > :not(summary) { display: none; }
   gap: 10px;
   padding: var(--pad) var(--pad) 0;
 }
-.era-index { color: var(--accent); font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.card-banner h3 { min-width: 0; margin: 0; font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
+.era-index { color: var(--accent); font-size: var(--fs-sm); font-weight: 700; font-variant-numeric: tabular-nums; }
+.card-banner h3 { min-width: 0; margin: 0; font-size: var(--fs-xl); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
 .card-badge {
   margin-left: auto;
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--subtle);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -515,13 +495,13 @@ details:not([open]) > :not(summary) { display: none; }
   border-bottom: 1px solid var(--line);
 }
 .inset-head .section-label { margin: 0; }
-.inset-head span { color: var(--muted); font-size: 14px; }
+.inset-head span { color: var(--muted); font-size: var(--fs-sm); }
 .term-stack { margin: 16px var(--pad) var(--pad); }
-.era-summary { margin: 0; font-size: 17px; }
+.era-summary { margin: 0; font-size: var(--fs-body); }
 .section-label {
   margin: 0 0 8px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -538,10 +518,14 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .callout .section-label { color: var(--accent); }
 .callout p { margin: 0; }
+.listen-list { margin: 0; padding-left: 18px; }
+.listen-list li + li { margin-top: 6px; }
+.listen-link { color: var(--accent); font-weight: 700; text-decoration: none; }
+.listen-link::after { content: " ↗"; font-weight: 400; }
 .callout ul { color: var(--text); }
 .dot-list { margin-top: 4px; }
 .dot-list > * { display: inline; }
-.dot-list .study-link { display: inline; min-height: 0; padding: 0; font-size: 16px; font-weight: 500; }
+.dot-list .study-link { display: inline; min-height: 0; padding: 0; font-size: var(--fs-body); font-weight: 500; }
 .dot-list .genre-text { color: var(--text); }
 .era-section li + li,
 .callout li + li,
@@ -555,17 +539,25 @@ details:not([open]) > :not(summary) { display: none; }
 .nested-composer > summary:hover { background: var(--subtle); }
 .nested-composer[open] { background: var(--card); box-shadow: inset 3px 0 0 var(--accent); }
 .nested-composer[open] > summary { background: var(--card); }
-.composer-summary { display: block; min-width: 0; }
-.composer-main { display: grid; gap: 2px; min-width: 0; }
-.composer-name-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.composer-name-line strong { color: var(--text); font-size: 17px; font-weight: 700; }
+/* 작곡가 줄: [이름 / 한 줄 소개][생몰년 / ＋] — 생몰년은 오른쪽 위 작은 회색 글씨 */
+.nested-composer > summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "name years" "line plus";
+  row-gap: 2px;
+}
+.composer-summary,
+.composer-main,
+.composer-name-line { display: contents; }
+.composer-name-line strong { grid-area: name; min-width: 0; color: var(--text); font-size: var(--fs-body); font-weight: 700; }
+.nested-composer > summary::after { grid-area: plus; justify-self: end; }
 .nested-composer[open] .composer-name-line strong { color: var(--accent); }
-.composer-years { flex: 0 0 auto; color: var(--muted); font-size: 14px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.composer-years { grid-area: years; justify-self: end; color: var(--muted); font-size: var(--fs-sm); font-weight: 400; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .composer-line {
+  grid-area: line;
   display: -webkit-box;
   overflow: hidden;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 400;
   line-height: 1.5;
   -webkit-line-clamp: 1;
@@ -574,20 +566,20 @@ details:not([open]) > :not(summary) { display: none; }
 .nested-composer[open] .composer-line { display: none; }
 .study-card-body { padding: 0 16px 20px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
-.composer-detail-name { padding: 16px 0 8px; color: var(--muted); font-size: 14px; }
-.composer-intro { margin-bottom: 16px !important; font-size: 17px; }
+.composer-detail-name { padding: 16px 0 8px; color: var(--muted); font-size: var(--fs-sm); }
+.composer-intro { margin-bottom: 16px !important; font-size: var(--fs-body); }
 .study-card-body > .section-label { margin: 24px 0 8px; }
-.study-card-body h4:not(.section-label) { margin: 24px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.study-card-body h4:not(.section-label) { margin: 24px 0 8px; font-size: var(--fs-body); font-weight: 700; line-height: 1.35; }
 .study-card-body ul.work-list,
 .study-card-body ul.life-list { padding: 0; list-style: none; }
 .work-row { padding: 10px 0; border-top: 1px solid var(--line); }
 .work-row:first-child { border-top: 0; padding-top: 0; }
 .study-card-body .work-row + .work-row { margin-top: 0; }
 .work-title { display: block; font-weight: 700; }
-.work-note { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+.work-note { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-sm); }
 .work-row.work-highlight .work-title { color: var(--accent); }
-.life-list li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
-.life-year { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+.life-list li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.life-year { color: var(--accent); font-size: var(--fs-sm); font-weight: 700; font-variant-numeric: tabular-nums; }
 .related-block {
   display: flex;
   flex-wrap: wrap;
@@ -597,8 +589,8 @@ details:not([open]) > :not(summary) { display: none; }
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.related-label { color: var(--muted); font-size: 14px; font-weight: 400; line-height: 1.6; }
-.study-link-list { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; font-size: 14px; font-weight: 400; line-height: 1.6; }
+.related-label { color: var(--muted); font-size: var(--fs-sm); font-weight: 400; line-height: 1.6; }
+.study-link-list { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; font-size: var(--fs-sm); font-weight: 400; line-height: 1.6; }
 /* Inline link lists: the separator stays at the end of a line when the list wraps */
 .related-block .study-link-list { display: block; min-width: 0; }
 .related-block .study-link:not(:last-child)::after,
@@ -612,7 +604,7 @@ details:not([open]) > :not(summary) { display: none; }
   border: 0;
   background: transparent;
   color: var(--accent);
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 700;
   text-align: left;
   text-decoration: none;
@@ -621,7 +613,7 @@ details:not([open]) > :not(summary) { display: none; }
   display: inline;
   min-height: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 400;
 }
 .study-link::after { content: none; }
@@ -630,7 +622,7 @@ details:not([open]) > :not(summary) { display: none; }
   min-height: 44px;
   align-items: center;
   color: var(--accent);
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 700;
   text-decoration: none;
 }
@@ -648,7 +640,7 @@ details:not([open]) > :not(summary) { display: none; }
   gap: 12px;
   padding: 16px var(--pad) 4px;
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .timeline-era span { color: var(--muted); font-weight: 400; }
@@ -660,7 +652,7 @@ details:not([open]) > :not(summary) { display: none; }
   gap: 20px;
   align-items: start;
   padding: 8px var(--pad);
-  font-size: 16px;
+  font-size: var(--fs-body);
   line-height: 1.6;
   text-align: left;
 }
@@ -684,13 +676,13 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--accent);
 }
 .timeline-row.is-korean::after { box-shadow: 0 0 0 3px var(--accent-soft); }
-.timeline-year { color: var(--muted); font-size: 16px; font-weight: 700; line-height: inherit; font-variant-numeric: tabular-nums; text-align: right; }
-.timeline-copy { min-width: 0; color: var(--text); font-size: 16px; line-height: inherit; }
+.timeline-year { color: var(--muted); font-size: var(--fs-sm); font-weight: 700; line-height: inherit; font-variant-numeric: tabular-nums; text-align: right; }
+.timeline-copy { min-width: 0; color: var(--text); font-size: var(--fs-body); line-height: inherit; }
 .timeline-copy .study-link {
   display: inline;
   min-height: 0;
   padding: 0;
-  font-size: 16px;
+  font-size: var(--fs-body);
   line-height: inherit;
   vertical-align: baseline;
 }
@@ -703,14 +695,14 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: 12px;
   background: var(--disclosure-bg);
 }
-.term-name { font-size: 17px; font-weight: 700; }
+.term-name { font-size: var(--fs-body); font-weight: 700; }
 .term-body { min-width: 0; }
 .term-definition { margin: 0; color: var(--muted); }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
 .term-row[hidden] { display: none; }
 
 .note-field { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-.note-field label { display: block; margin-bottom: 8px; font-size: 16px; font-weight: 700; }
+.note-field label { display: block; margin-bottom: 8px; font-size: var(--fs-body); font-weight: 700; }
 .note-field textarea {
   width: 100%;
   min-height: 96px;
@@ -724,7 +716,7 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .note-field textarea:focus { border-color: var(--accent); }
 
-.footnote { margin: 24px 0 0; color: var(--muted); font-size: 14px; }
+.footnote { margin: 24px 0 0; color: var(--muted); font-size: var(--fs-sm); }
 .toast {
   position: fixed;
   left: 50%;
@@ -735,7 +727,7 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: 999px;
   background: var(--text);
   color: var(--card);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   opacity: 0;
   pointer-events: none;
 }
@@ -748,7 +740,7 @@ details:not([open]) > :not(summary) { display: none; }
   min-height: 52px;
   padding: 14px var(--pad);
   color: var(--text);
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 700;
 }
 .record > details > summary:hover { background: var(--disclosure-bg); }
@@ -768,7 +760,7 @@ details:not([open]) > :not(summary) { display: none; }
 .performer-detail[open] .performer-name,
 .piece-main[open] .piece-title { color: var(--accent); }
 .info-section h4,
-.soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+.soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-sm); font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
 
 /* Stats, notes, calendar */
@@ -783,10 +775,10 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .stat { padding: 14px 16px; border-left: 1px solid var(--line); }
 .stat:first-child { border-left: 0; }
-.stat strong { display: block; font-size: 22px; font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
-.stat strong small { margin-left: 2px; color: var(--muted); font-size: 14px; font-weight: 500; }
-.stat span { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; }
-.record-rating { display: inline-block; margin: 0 0 8px 6px; color: var(--star); font-size: 14px; letter-spacing: 1px; vertical-align: top; line-height: 24px; }
+.stat strong { display: block; font-size: var(--fs-lg); font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.stat strong small { margin-left: 2px; color: var(--muted); font-size: var(--fs-sm); font-weight: 500; }
+.stat span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-sm); }
+.record-rating { display: inline-block; margin: 0 0 8px 6px; color: var(--star); font-size: var(--fs-sm); letter-spacing: 1px; vertical-align: top; line-height: 24px; }
 .note-detail .detail-body { padding-top: 16px; }
 .rating {
   display: flex;
@@ -796,7 +788,7 @@ details:not([open]) > :not(summary) { display: none; }
   border: 0;
   padding: 0;
 }
-.rating legend { float: left; margin-right: 8px; font-size: 16px; font-weight: 700; }
+.rating legend { float: left; margin-right: 8px; font-size: var(--fs-body); font-weight: 700; }
 .rating button {
   width: 36px;
   height: 36px;
@@ -804,19 +796,19 @@ details:not([open]) > :not(summary) { display: none; }
   border: 0;
   background: transparent;
   color: var(--line);
-  font-size: 26px;
+  font-size: var(--fs-xl);
   line-height: 1;
 }
 .rating button[aria-pressed="true"] { color: var(--star); }
 .note-field { margin-top: 0; padding-top: 0; border-top: 0; }
-.note-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; color: var(--muted); font-size: 14px; }
+.note-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; color: var(--muted); font-size: var(--fs-sm); }
 .text-button {
   min-height: 32px;
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .calendar-add {
@@ -829,7 +821,7 @@ details:not([open]) > :not(summary) { display: none; }
   border-radius: 999px;
   background: var(--card);
   color: var(--accent);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 
@@ -853,12 +845,11 @@ details:not([open]) > :not(summary) { display: none; }
   transition: opacity .2s ease, transform .2s ease;
 }
 .to-top.show { opacity: 1; pointer-events: auto; transform: none; }
-.site-footer { margin: 32px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
+.site-footer { margin: 32px 0 0; color: var(--muted); font-size: var(--fs-sm); text-align: center; }
 .site-footer a { color: var(--accent); text-decoration: none; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 440px) {
-  .brand-row { padding-top: 52px; }
   .stat { padding: 12px 14px; }
   .record-top { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
   .date-block { padding-right: 12px; }
@@ -877,7 +868,6 @@ details:not([open]) > :not(summary) { display: none; }
   <main class="wrap">
     <div class="brand-row">
       <div class="brand"><h1>클래식</h1></div>
-      <button class="icon-button" id="theme-toggle" type="button" aria-label="화면 테마 바꾸기">◐</button>
     </div>
     <nav class="tab-bar" id="tab-bar" aria-label="클래식 기록 메뉴">
       <div class="primary-tabs" role="tablist">
@@ -1306,7 +1296,21 @@ details:not([open]) > :not(summary) { display: none; }
 
           var firstListen = createElement('section', 'callout');
           firstListen.appendChild(createElement('h4', 'section-label', '♪ 먼저 들어 볼 곡'));
-          firstListen.appendChild(createElement('p', '', era.listen));
+          var listenList = createElement('ul', 'listen-list');
+          era.listen.forEach(function (item) {
+            var row = createElement('li');
+            if (item.url) {
+              var link = createElement('a', 'listen-link', item.text);
+              link.href = item.url;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              row.appendChild(link);
+            } else {
+              row.textContent = item.text;
+            }
+            listenList.appendChild(row);
+          });
+          firstListen.appendChild(listenList);
           description.appendChild(firstListen);
           group.appendChild(description);
 
@@ -2186,25 +2190,6 @@ details:not([open]) > :not(summary) { display: none; }
 
       refreshTemporalState();
       window.setInterval(refreshTemporalState, 60000);
-
-      var themeToggle = document.getElementById('theme-toggle');
-      function effectiveTheme() {
-        var forced = document.documentElement.getAttribute('data-theme');
-        if (forced) return forced;
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      function paintThemeToggle() {
-        var dark = effectiveTheme() === 'dark';
-        themeToggle.textContent = dark ? '☀' : '☾';
-        themeToggle.setAttribute('aria-label', dark ? '밝은 화면으로 바꾸기' : '어두운 화면으로 바꾸기');
-      }
-      themeToggle.addEventListener('click', function () {
-        var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        storageSet('classic-theme', next);
-        paintThemeToggle();
-      });
-      paintThemeToggle();
 
       var toTop = document.getElementById('to-top');
       toTop.addEventListener('click', function () {
