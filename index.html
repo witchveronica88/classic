@@ -24,7 +24,6 @@
   --line: #E2DAD0;
   --accent: #7A2638;
   --accent-soft: #F3E3E6;
-  --accent-line: rgba(122, 38, 56, .35);
   --star: #B7791F;
   --shadow: 0 6px 20px rgba(31, 27, 24, .12);
   --radius: 16px;
@@ -48,7 +47,6 @@
     --line: #3A332E;
     --accent: #E59AAA;
     --accent-soft: #43262D;
-    --accent-line: rgba(229, 154, 170, .45);
     --star: #E8B04B;
     --shadow: 0 6px 20px rgba(0, 0, 0, .4);
     --rule: #4A413A;
@@ -464,8 +462,8 @@ details:not([open]) > :not(summary) { display: none; }
   letter-spacing: 0.02em;
 }
 /* 펼친 줄 안쪽: 글 목록은 위 여백, 줄 목록(작곡가 · 용어)은 줄이 여백을 가진다 */
-.fold-card > details > .detail-body { padding-top: 4px; line-height: 1.7; }
-.fold-card .detail-body.row-list { padding-bottom: 8px; }
+.fold-card > details > .detail-body { padding-top: 16px; line-height: 1.7; }
+.fold-card .detail-body.row-list { padding-top: 0; padding-bottom: 8px; }
 .fold-list { padding: 0 var(--pad) 8px; }
 .fold-intro { margin: 8px 0; color: var(--muted); line-height: 1.7; }
 .fold-card .detail-body > ul,
@@ -494,7 +492,7 @@ details:not([open]) > :not(summary) { display: none; }
 .nested-composer > summary::after { grid-area: plus; justify-self: end; }
 .nested-composer[open] .composer-name-line strong { color: var(--accent); }
 .composer-years { grid-area: years; justify-self: end; color: var(--muted); font-size: var(--fs-s); font-weight: 400; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.study-card-body { padding: 0 0 16px; line-height: 1.7; }
+.study-card-body { padding: 12px 0 16px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
 .composer-detail-name { padding: 0 0 8px; color: var(--muted); font-size: var(--fs-s); }
 .composer-intro { margin-bottom: 16px !important; font-size: var(--fs-m); }
@@ -608,13 +606,15 @@ details:not([open]) > :not(summary) { display: none; }
 .term-summary { min-width: 0; }
 .term-name { font-size: var(--fs-m); font-weight: 700; }
 .term-row[open] .term-name { color: var(--accent); }
-.term-body { min-width: 0; padding: 0 0 16px; line-height: 1.7; }
+.term-body { min-width: 0; padding: 12px 0 16px; line-height: 1.7; }
 .term-definition { margin: 0; color: var(--text); font-weight: 700; }
 .term-detail { margin: 8px 0 0; color: var(--text); }
 .term-listen { margin-top: 12px; }
 .term-listen .section-label { margin: 0 0 2px; }
 .term-listen p { margin: 0; }
-.fold-text { margin: 8px 0 0; }
+.fold-text { margin: 12px 0 0; }
+.fold-text:first-child,
+.fold-intro:first-child { margin-top: 0; }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
 .term-row[hidden] { display: none; }
 
@@ -661,13 +661,10 @@ details:not([open]) > :not(summary) { display: none; }
   font-size: var(--fs-m);
   font-weight: 700;
 }
-/* ＋를 펼친 부분은 줄과 안쪽 전체에 옅은 배경을 깔아 어디까지인지 보이게 한다 */
-.record > details > summary:hover,
-.fold-card > details > summary:hover,
+/* 첫 단계에서 ＋를 펼치면 배경색은 그대로 두고, 펼친 범위 전체의 왼쪽 끝에 컬러바를 세운다.
+   위에 붙는 제목 줄에도 같은 막대를 그려 스크롤 중에도 이어 보이게 한다. */
 .record > details[open],
-.fold-card > details[open],
-.record > details[open] > summary,
-.fold-card > details[open] > summary { background: var(--disclosure-bg); }
+.fold-card > details[open] { box-shadow: inset 3px 0 0 var(--accent); }
 .program-detail .detail-body { padding-top: 4px; }
 .performer-detail > summary,
 .piece-main > summary,
@@ -677,8 +674,9 @@ details:not([open]) > :not(summary) { display: none; }
   padding: 12px 0;
   background: transparent;
 }
-.performer-detail > p { padding: 0 0 16px; color: var(--text); }
-.piece-body { padding: 0 0 16px; }
+/* 펼친 내용은 제목 줄 아래 구분선에서 띄우고, 제목과 같은 왼쪽 선에 맞춘다 */
+.performer-detail > p { padding: 12px 0 16px; color: var(--text); }
+.piece-body { padding: 12px 0 16px; }
 .piece-copy p,
 .soloist-info p { color: var(--text); line-height: 1.7; }
 .performer-detail[open] .performer-name,
@@ -692,7 +690,7 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: var(--stick);
   z-index: 3;
-  box-shadow: 0 1px 0 var(--line);
+  box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
 .performer-detail[open] > summary,
 .piece-main[open] > summary,
@@ -701,18 +699,10 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: calc(var(--stick) + 52px);
   z-index: 2;
-  background: var(--disclosure-bg);
+  background: var(--card);
   box-shadow: 0 1px 0 var(--line);
 }
-.fold-list .term-row[open] > summary { top: var(--stick); background: var(--card); }
-/* 한 번 더 펼친 항목은 상자 대신 왼쪽 강조선으로 범위를 보여 준다 */
-.performer-detail[open] > p,
-.piece-main[open] > .piece-body,
-.nested-composer[open] > .study-card-body,
-.term-row[open] > .term-body {
-  padding-left: 14px;
-  border-left: 2px solid var(--accent-line);
-}
+.fold-list .term-row[open] > summary { top: var(--stick); }
 .info-section h4,
 .soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: var(--fs-s); font-weight: 700; letter-spacing: 0.02em; }
 .info-list { color: var(--text); }
