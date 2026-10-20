@@ -566,9 +566,15 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .inset-head .section-label { margin: 0; }
 .inset-head span { color: var(--muted); font-size: 14px; }
-.inset-list .term-list { border: 0; border-radius: 0; background: transparent; }
-.inset-list .term-row { padding: 14px 16px; background: transparent; }
-.inset-list .term-name { font-size: 17px; }
+.term-stack { margin: 16px var(--pad) var(--pad); }
+.term-stack .term-list { gap: 10px; overflow: visible; border: 0; border-radius: 0; background: transparent; }
+.term-stack .term-row {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--disclosure-bg);
+}
+.term-stack .term-name { font-size: 17px; }
 .era-summary { margin: 0; font-size: 17px; }
 .section-label {
   margin: 0 0 8px;
@@ -1611,7 +1617,7 @@ details:not([open]) > :not(summary) { display: none; }
             (Array.isArray(intro) ? intro : [intro]).forEach(function (text) { introWrap.appendChild(createElement('p', '', text)); });
             section.appendChild(introWrap);
           }
-          var box = createElement('div', 'inset-list');
+          var box = createElement('div', 'term-stack');
           var list = createElement('div', 'term-list');
           items.forEach(function (item) {
             var name = sourceKind === 'term' ? item.name : item[0];
