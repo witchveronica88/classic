@@ -171,8 +171,7 @@ button { cursor: pointer; }
 }
 
 .filters,
-.era-filters,
-.term-filters {
+.era-filters {
   display: flex;
   gap: 8px;
   margin: 0 0 24px;
@@ -181,11 +180,9 @@ button { cursor: pointer; }
 }
 .filters::-webkit-scrollbar,
 .era-filters::-webkit-scrollbar,
-.term-filters::-webkit-scrollbar,
 .study-tabs::-webkit-scrollbar { display: none; }
 .filter,
-.era-filter,
-.term-filter {
+.era-filter {
   flex: 0 0 auto;
   min-height: 44px;
   padding: 8px 16px;
@@ -197,10 +194,8 @@ button { cursor: pointer; }
   font-weight: 700;
   white-space: nowrap;
 }
-.term-filter { font-weight: 700; }
 .filter[aria-selected="true"],
-.era-filter[aria-pressed="true"],
-.term-filter[aria-pressed="true"] {
+.era-filter[aria-pressed="true"] {
   border-color: var(--accent-soft);
   background: var(--accent-soft);
   color: var(--accent);
@@ -214,8 +209,7 @@ button { cursor: pointer; }
 .era-group,
 .timeline-list,
 .term-list,
-.instrument-section,
-.reading-card {
+.instrument-section {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -487,7 +481,9 @@ details:not([open]) > :not(summary) { display: none; }
 .study-tab[aria-selected="true"] { color: var(--accent); font-weight: 700; }
 .study-count { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
 .timeline-heading-row { margin-top: 24px; }
-.era-tabs {
+/* Sticky chip navigation shared by era tabs and dictionary categories */
+.era-tabs,
+.term-filters {
   position: sticky;
   top: 0;
   z-index: 4;
@@ -502,8 +498,10 @@ details:not([open]) > :not(summary) { display: none; }
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
-.era-tabs::-webkit-scrollbar { display: none; }
-.era-tab {
+.era-tabs::-webkit-scrollbar,
+.term-filters::-webkit-scrollbar { display: none; }
+.era-tab,
+.term-filter {
   flex: 0 0 auto;
   min-height: 44px;
   padding: 8px 14px;
@@ -515,44 +513,32 @@ details:not([open]) > :not(summary) { display: none; }
   font-size: 14px;
   font-weight: 700;
 }
-.era-tab[aria-current="true"] {
+.era-tab[aria-current="true"],
+.term-filter[aria-pressed="true"] {
   border-color: var(--accent-soft);
   background: var(--accent-soft);
   color: var(--accent);
 }
-.dictionary-subtabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 16px;
-  margin: 0 0 16px;
-  border-bottom: 1px solid var(--line);
-}
-.dictionary-subtab {
-  position: relative;
-  min-height: 44px;
-  padding: 8px 0;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-align: left;
-}
-.dictionary-subtab[aria-selected="true"] { color: var(--accent); font-weight: 700; }
-.dictionary-subpanel { line-height: 1.6; }
 
 .era-overviews { gap: 24px; }
-.era-banner {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+/* Study cards: eras and dictionary sections share banner, description and inset list */
+.study-cards { display: grid; gap: 24px; }
+.study-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.card-banner {
+  display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 20px 20px 0;
+  padding: var(--pad) var(--pad) 0;
 }
 .era-index { color: var(--accent); font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.era-banner h3 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
-.era-years {
+.card-banner h3 { min-width: 0; margin: 0; font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
+.card-badge {
+  margin-left: auto;
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--subtle);
@@ -561,7 +547,28 @@ details:not([open]) > :not(summary) { display: none; }
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.era-description { display: grid; gap: 20px; padding: 12px 20px 20px; line-height: 1.7; }
+.card-description { display: grid; gap: 20px; padding: 12px var(--pad) 0; line-height: 1.7; }
+.card-description p { margin: 0; }
+.card-description:last-child { padding-bottom: var(--pad); }
+.inset-list {
+  margin: 20px var(--pad) var(--pad);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--disclosure-bg);
+}
+.inset-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.inset-head .section-label { margin: 0; }
+.inset-head span { color: var(--muted); font-size: 14px; }
+.inset-list .term-list { border: 0; border-radius: 0; background: transparent; }
+.inset-list .term-row { padding: 14px 16px; background: transparent; }
+.inset-list .term-name { font-size: 17px; }
 .era-summary { margin: 0; font-size: 17px; }
 .section-label {
   margin: 0 0 8px;
@@ -599,16 +606,6 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .chip-list > .study-link { color: var(--accent); }
 .chip-list > .study-link:hover { border-color: var(--accent); }
-.era-composer-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 14px 20px 6px;
-  border-top: 1px solid var(--line);
-  background: var(--subtle);
-}
-.era-composer-head .section-label { margin: 0; }
-.era-composer-head span { color: var(--muted); font-size: 14px; }
 .key-table { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 12px; }
 .key-cell { padding: 8px 4px; border-left: 1px solid var(--line); text-align: center; }
 .key-cell:first-child { border-left: 0; }
@@ -619,13 +616,12 @@ details:not([open]) > :not(summary) { display: none; }
 .study-card-body li + li,
 .key-guide li + li { margin-top: 8px; }
 .era-genres { margin-top: 16px; }
-.era-composer-list { border-top: 1px solid var(--line); }
 .nested-composer { border-top: 1px solid var(--line); }
 .nested-composer:first-child { border-top: 0; }
-.nested-composer > summary { min-height: 56px; padding: 12px 20px; background: var(--card); }
-.nested-composer > summary:hover { background: var(--disclosure-bg); }
-.nested-composer[open] { box-shadow: inset 3px 0 0 var(--accent); }
-.nested-composer[open] > summary { background: var(--disclosure-bg); }
+.nested-composer > summary { min-height: 56px; padding: 12px 16px; background: transparent; }
+.nested-composer > summary:hover { background: var(--subtle); }
+.nested-composer[open] { background: var(--card); box-shadow: inset 3px 0 0 var(--accent); }
+.nested-composer[open] > summary { background: var(--card); }
 .composer-summary { display: block; min-width: 0; }
 .composer-main { display: grid; gap: 2px; min-width: 0; }
 .composer-name-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
@@ -643,13 +639,12 @@ details:not([open]) > :not(summary) { display: none; }
   -webkit-box-orient: vertical;
 }
 .nested-composer[open] .composer-line { display: none; }
-.study-card-body { padding: 0 20px 20px; line-height: 1.7; }
+.study-card-body { padding: 0 16px 20px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
 .composer-detail-name { padding: 16px 0 8px; color: var(--muted); font-size: 14px; }
 .composer-intro { margin-bottom: 16px !important; font-size: 17px; }
 .study-card-body > .section-label { margin: 24px 0 8px; }
-.study-card-body h4:not(.section-label),
-.reading-card h4 { margin: 24px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.study-card-body h4:not(.section-label) { margin: 24px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
 .study-card-body ul.work-list,
 .study-card-body ul.life-list { padding: 0; list-style: none; }
 .work-row { padding: 10px 0; border-top: 1px solid var(--line); }
@@ -780,9 +775,6 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--card);
 }
 .term-row:first-child { border-top: 0; }
-[data-dictionary-category] > section + section { margin-top: 24px; }
-[data-dictionary-category] > section > .section-row { margin: 0 0 8px; }
-.reading-card h4:first-child { margin-top: 0; }
 .term-name { font-size: 16px; font-weight: 700; }
 .term-body { min-width: 0; }
 .term-definition { margin: 0; color: var(--muted); }
@@ -803,16 +795,11 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .term-row[hidden] { display: none; }
 
-.instrument-intro { margin: 0 0 16px; }
-.instrument-intro p { margin: 0; }
-.instrument-intro p + p { margin-top: 8px; }
 .instrument-body { padding: 12px 16px 16px; }
 .instrument-body > p { margin: 0 0 12px; color: var(--muted); }
 .instrument-row { padding: 12px 0; border-top: 1px solid var(--line); }
 .instrument-row strong { display: block; font-size: 16px; font-weight: 700; }
 .instrument-row span { display: block; margin-top: 4px; color: var(--muted); }
-.reading-card { padding: 16px; }
-.reading-card > p { margin: 0; }
 .catalogue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
 .catalogue-row { padding: 12px 0; border-top: 1px solid var(--line); }
 .catalogue-row strong { display: block; font-size: 16px; font-weight: 700; }
@@ -859,8 +846,7 @@ details:not([open]) > :not(summary) { display: none; }
   font-size: 16px;
   font-weight: 700;
 }
-.record > details > summary:hover,
-.nested-composer > summary:hover { background: var(--disclosure-bg); }
+.record > details > summary:hover { background: var(--disclosure-bg); }
 .record > details[open] > summary { background: var(--disclosure-bg); }
 .program-detail .detail-body { padding-top: 4px; }
 .piece-list { border-radius: 0; }
@@ -894,8 +880,7 @@ details:not([open]) > :not(summary) { display: none; }
   font-weight: 500;
 }
 .era-genres .chip-list > .study-link { color: var(--accent); }
-.study-tab[aria-selected="true"],
-.dictionary-subtab[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
+.study-tab[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
 .study-tabs { gap: 20px; }
 
 /* Stats, notes, calendar */
@@ -977,7 +962,8 @@ details:not([open]) > :not(summary) { display: none; }
 .search-result.is-active { background: var(--accent-soft); }
 .search-result mark { background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .era-group, .composer-card, .work-row, #timeline-heading { scroll-margin-top: 72px; }
-.term-row, .reading-card, .records > .record { scroll-margin-top: 16px; }
+.records > .record { scroll-margin-top: 16px; }
+.term-row, #dictionary-list { scroll-margin-top: 72px; }
 .flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); } 100% { box-shadow: inset 0 0 0 2px transparent; } }
 
@@ -1315,10 +1301,6 @@ details:not([open]) > :not(summary) { display: none; }
         }, 0);
         return studyData.terms.length + instrumentItems + studyData.reading.catalogues.length;
       }
-      var activeDictionarySubcategories = {
-        '곡의 종류': '형식 · 장르',
-        '연주와 편성': '빠르기 · 셈여림 · 연주법'
-      };
       function createElement(tag, className, text) {
         var node = document.createElement(tag);
         if (className) node.className = className;
@@ -1425,18 +1407,18 @@ details:not([open]) > :not(summary) { display: none; }
         var dictionaryList = document.getElementById('dictionary-list');
 
         studyData.eras.forEach(function (era, eraIndex) {
-          var group = createElement('section', 'era-group');
+          var group = createElement('section', 'study-card era-group');
           group.id = 'era-' + (eraIndex + 1);
           group.tabIndex = -1;
           group.setAttribute('data-era-card', era.name);
 
-          var banner = createElement('div', 'era-banner');
+          var banner = createElement('div', 'card-banner');
           banner.appendChild(createElement('span', 'era-index', String(eraIndex + 1).padStart(2, '0')));
           banner.appendChild(createElement('h3', '', era.name));
-          banner.appendChild(createElement('span', 'era-years', era.years));
+          banner.appendChild(createElement('span', 'card-badge', era.years));
           group.appendChild(banner);
 
-          var description = createElement('div', 'era-description');
+          var description = createElement('div', 'card-description');
           description.appendChild(createElement('p', 'era-summary', era.summary));
 
           var features = createElement('section', 'era-section');
@@ -1457,14 +1439,16 @@ details:not([open]) > :not(summary) { display: none; }
           group.appendChild(description);
 
           var eraComposerCount = studyData.composers.filter(function (composer) { return composer.era === era.name; }).length;
-          var composerHead = createElement('div', 'era-composer-head');
-          composerHead.appendChild(createElement('h4', 'section-label', '작곡가'));
+          var composerBox = createElement('div', 'inset-list');
+          var composerHead = createElement('div', 'inset-head');
+          composerHead.appendChild(createElement('h4', 'section-label', era.name + ' 작곡가'));
           composerHead.appendChild(createElement('span', '', eraComposerCount + '명'));
-          group.appendChild(composerHead);
+          composerBox.appendChild(composerHead);
 
           var eraComposerList = createElement('div', 'era-composer-list');
           eraComposerList.setAttribute('data-era-composers', era.name);
-          group.appendChild(eraComposerList);
+          composerBox.appendChild(eraComposerList);
+          group.appendChild(composerBox);
           eraOverviews.appendChild(group);
         });
 
@@ -1616,58 +1600,32 @@ details:not([open]) > :not(summary) { display: none; }
           return row;
         }
 
-        function appendDictionarySubsection(parent, title, items, category, sourceKind, intro) {
-          var section = createElement('section');
-          if (title) {
-            var heading = createElement('div', 'section-row');
-            heading.appendChild(createElement('h4', '', title));
-            section.appendChild(heading);
-          }
+        function appendDictionaryCard(parent, title, items, category, sourceKind, intro) {
+          var section = createElement('section', 'study-card');
+          var banner = createElement('div', 'card-banner');
+          banner.appendChild(createElement('h3', '', title));
+          banner.appendChild(createElement('span', 'card-badge', items.length + '개'));
+          section.appendChild(banner);
           if (intro) {
-            var introWrap = createElement('div', 'instrument-intro');
-            introWrap.appendChild(createElement('p', '', intro));
+            var introWrap = createElement('div', 'card-description');
+            (Array.isArray(intro) ? intro : [intro]).forEach(function (text) { introWrap.appendChild(createElement('p', '', text)); });
             section.appendChild(introWrap);
           }
+          var box = createElement('div', 'inset-list');
           var list = createElement('div', 'term-list');
           items.forEach(function (item) {
             var name = sourceKind === 'term' ? item.name : item[0];
             var description = sourceKind === 'term' ? item.description : item[1];
             list.appendChild(createDictionaryRow(name, description, category, sourceKind));
           });
-          section.appendChild(list);
+          box.appendChild(list);
+          section.appendChild(box);
           parent.appendChild(section);
           return section;
         }
 
-        function appendDictionarySubtabs(parent, category, subsections) {
-          var tabs = createElement('nav', 'dictionary-subtabs');
-          tabs.setAttribute('role', 'tablist');
-          tabs.setAttribute('aria-label', category + ' 하위 분류');
-          var activeSubcategory = activeDictionarySubcategories[category] || subsections[0].label;
-
-          subsections.forEach(function (subsection, index) {
-            var idBase = 'dictionary-subtab-' + category.replace(/[^가-힣a-zA-Z0-9]/g, '-') + '-' + (index + 1);
-            var selected = subsection.label === activeSubcategory;
-            var button = createElement('button', 'dictionary-subtab', subsection.label);
-            button.id = idBase;
-            button.type = 'button';
-            button.setAttribute('role', 'tab');
-            button.setAttribute('aria-selected', selected ? 'true' : 'false');
-            button.setAttribute('aria-controls', idBase + '-panel');
-            button.setAttribute('data-dictionary-subcategory', subsection.label);
-            button.tabIndex = selected ? 0 : -1;
-            tabs.appendChild(button);
-
-            var panel = createElement('section', 'dictionary-subpanel');
-            panel.id = idBase + '-panel';
-            panel.setAttribute('role', 'tabpanel');
-            panel.setAttribute('aria-labelledby', idBase);
-            panel.setAttribute('data-dictionary-subcategory-panel', subsection.label);
-            panel.hidden = !selected;
-            appendDictionarySubsection(panel, '', subsection.items, category, subsection.sourceKind);
-            parent.appendChild(panel);
-          });
-          parent.insertBefore(tabs, parent.firstChild);
+        function termsIn(category) {
+          return studyData.terms.filter(function (term) { return term.category === category; });
         }
 
         var dictionaryCategories = ['곡의 종류', '작곡 기법 · 개념', '사조', '연주와 편성', '공연 관람', '읽는 법 · 기타'];
@@ -1678,43 +1636,37 @@ details:not([open]) > :not(summary) { display: none; }
           button.setAttribute('data-category', category);
           dictionaryFilters.appendChild(button);
 
-          var categoryPanel = createElement('section');
+          var categoryPanel = createElement('section', 'study-cards');
           categoryPanel.setAttribute('data-dictionary-category', category);
           categoryPanel.hidden = category !== activeDictionaryCategory;
 
           if (category === '곡의 종류') {
-            appendDictionarySubtabs(categoryPanel, category, [
-              { label: '형식 · 장르', items: studyData.terms.filter(function (term) { return term.category === '형식 · 장르'; }), sourceKind: 'term' },
-              { label: '악장 · 곡 이름', items: studyData.terms.filter(function (term) { return term.category === '악장 · 곡 이름'; }), sourceKind: 'term' }
-            ]);
+            appendDictionaryCard(categoryPanel, '형식 · 장르', termsIn('형식 · 장르'), category, 'term');
+            appendDictionaryCard(categoryPanel, '악장 · 곡 이름', termsIn('악장 · 곡 이름'), category, 'term');
           } else if (category === '작곡 기법 · 개념') {
-            appendDictionarySubsection(categoryPanel, '', studyData.terms.filter(function (term) { return term.category === '기법 · 개념'; }), category, 'term');
+            appendDictionaryCard(categoryPanel, category, termsIn('기법 · 개념'), category, 'term');
           } else if (category === '사조') {
-            appendDictionarySubsection(categoryPanel, '', studyData.terms.filter(function (term) { return term.category === '사조'; }), category, 'term');
+            appendDictionaryCard(categoryPanel, category, termsIn('사조'), category, 'term');
           } else if (category === '연주와 편성') {
-            var performanceSubsections = [{
-              label: '빠르기 · 셈여림 · 연주법',
-              items: studyData.terms.filter(function (term) { return term.category === '빠르기 · 셈여림 · 연주법'; }),
-              sourceKind: 'term'
-            }];
-            studyData.instruments.sections.forEach(function (section) {
-              performanceSubsections.push({
-                label: section.title === '본문에 나오는 특수 악기' ? '특수 악기' : section.title,
-                items: section.items,
-                sourceKind: 'instrument'
-              });
+            appendDictionaryCard(categoryPanel, '빠르기 · 셈여림 · 연주법', termsIn('빠르기 · 셈여림 · 연주법'), category, 'term');
+            studyData.instruments.sections.forEach(function (section, index) {
+              var title = section.title === '본문에 나오는 특수 악기' ? '특수 악기' : section.title;
+              appendDictionaryCard(categoryPanel, title, section.items, category, 'instrument', section.intro || (index === 0 ? studyData.instruments.intro : ''));
             });
-            appendDictionarySubtabs(categoryPanel, category, performanceSubsections);
           } else if (category === '공연 관람') {
-            appendDictionarySubsection(categoryPanel, '', studyData.terms.filter(function (term) { return term.category === '공연 관람'; }), category, 'term', '공연장에서 자주 듣는 말과 관람 관례를 모았다. 처음 가는 공연이라면 「악장 사이 박수」부터 확인.');
+            appendDictionaryCard(categoryPanel, category, termsIn('공연 관람'), category, 'term', '공연장에서 자주 듣는 말과 관람 관례를 모았다. 처음 가는 공연이라면 「악장 사이 박수」부터 확인.');
           } else {
-            appendDictionarySubsection(categoryPanel, '직책 · 제도 · 그 밖의 말', studyData.terms.filter(function (term) { return term.category === '직책 · 제도 · 그 밖의 말'; }), category, 'term');
-            appendDictionarySubsection(categoryPanel, '작품번호', studyData.reading.catalogues, category, 'reading', studyData.reading.intro);
-            var keysSection = createElement('section', 'reading-card');
-            keysSection.appendChild(createElement('h4', '', '조성 이름')); 
+            appendDictionaryCard(categoryPanel, '직책 · 제도 · 그 밖의 말', termsIn('직책 · 제도 · 그 밖의 말'), category, 'term');
+            appendDictionaryCard(categoryPanel, '작품번호', studyData.reading.catalogues, category, 'reading', studyData.reading.intro);
+            var keysSection = createElement('section', 'study-card');
+            var keysBanner = createElement('div', 'card-banner');
+            keysBanner.appendChild(createElement('h3', '', '조성 이름'));
+            keysSection.appendChild(keysBanner);
+            var keysBody = createElement('div', 'card-description');
             var keys = createElement('ul', 'key-guide');
             studyData.reading.keys.forEach(function (item) { keys.appendChild(createElement('li', '', item)); });
-            keysSection.appendChild(keys);
+            keysBody.appendChild(keys);
+            keysSection.appendChild(keysBody);
             categoryPanel.appendChild(keysSection);
           }
           dictionaryList.appendChild(categoryPanel);
@@ -1770,27 +1722,9 @@ details:not([open]) > :not(summary) { display: none; }
         filterDictionary();
       }
 
-      function selectDictionarySubcategory(category, subcategory) {
-        activeDictionarySubcategories[category] = subcategory;
-        var categoryPanel = Array.prototype.slice.call(document.querySelectorAll('[data-dictionary-category]')).filter(function (panel) {
-          return panel.getAttribute('data-dictionary-category') === category;
-        })[0];
-        if (!categoryPanel) return;
-        categoryPanel.querySelectorAll('.dictionary-subtab').forEach(function (button) {
-          var selected = button.getAttribute('data-dictionary-subcategory') === subcategory;
-          button.setAttribute('aria-selected', selected ? 'true' : 'false');
-          button.tabIndex = selected ? 0 : -1;
-        });
-        categoryPanel.querySelectorAll('[data-dictionary-subcategory-panel]').forEach(function (panel) {
-          panel.hidden = panel.getAttribute('data-dictionary-subcategory-panel') !== subcategory;
-        });
-      }
-
       function revealDictionaryCard(name) {
         var card = findDictionaryCard(name);
         if (!card) return;
-        var subpanel = card.closest('[data-dictionary-subcategory-panel]');
-        if (subpanel) selectDictionarySubcategory(activeDictionaryCategory, subpanel.getAttribute('data-dictionary-subcategory-panel'));
         revealTarget(card);
       }
 
@@ -2098,27 +2032,8 @@ details:not([open]) > :not(summary) { display: none; }
       document.querySelectorAll('#dictionary-filters .term-filter').forEach(function (button) {
         button.addEventListener('click', function () {
           selectDictionaryCategory(button.getAttribute('data-category'));
-        });
-      });
-
-      document.querySelectorAll('.dictionary-subtabs').forEach(function (tabs) {
-        var buttons = tabs.querySelectorAll('.dictionary-subtab');
-        var category = tabs.closest('[data-dictionary-category]').getAttribute('data-dictionary-category');
-        buttons.forEach(function (button, index) {
-          button.addEventListener('click', function () {
-            selectDictionarySubcategory(category, button.getAttribute('data-dictionary-subcategory'));
-          });
-          button.addEventListener('keydown', function (event) {
-            var nextIndex = index;
-            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % buttons.length;
-            else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + buttons.length) % buttons.length;
-            else if (event.key === 'Home') nextIndex = 0;
-            else if (event.key === 'End') nextIndex = buttons.length - 1;
-            else return;
-            event.preventDefault();
-            buttons[nextIndex].focus();
-            selectDictionarySubcategory(category, buttons[nextIndex].getAttribute('data-dictionary-subcategory'));
-          });
+          var dictionaryList = document.getElementById('dictionary-list');
+          if (dictionaryList.getBoundingClientRect().top < 0) dictionaryList.scrollIntoView({ block: 'start' });
         });
       });
 
