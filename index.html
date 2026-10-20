@@ -1125,7 +1125,8 @@ details:not([open]) > :not(summary) { display: none; }
   <button class="icon-button to-top" id="to-top" type="button" aria-label="맨 위로">↑</button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="study-data.js"></script>
+  <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
+  <script src="study-data.js?v=2"></script>
   <script>
     (function () {
       var primaryTabs = document.querySelectorAll('.primary-tab');
@@ -1297,7 +1298,9 @@ details:not([open]) > :not(summary) { display: none; }
           var firstListen = createElement('section', 'callout');
           firstListen.appendChild(createElement('h4', 'section-label', '♪ 먼저 들어 볼 곡'));
           var listenList = createElement('ul', 'listen-list');
-          era.listen.forEach(function (item) {
+          // 예전 데이터는 "곡, 곡" 한 줄 글이었다.
+          var listenItems = typeof era.listen === 'string' ? era.listen.split(', ').map(function (text) { return { text: text, url: '' }; }) : era.listen;
+          listenItems.forEach(function (item) {
             var row = createElement('li');
             if (item.url) {
               var link = createElement('a', 'listen-link', item.text);
@@ -1801,7 +1804,12 @@ details:not([open]) > :not(summary) { display: none; }
         studySearch.setAttribute('aria-expanded', 'true');
       }
 
-      renderStudy();
+      // 데이터 파일에 문제가 있어도 탭과 공연 기록은 계속 동작하게 한다.
+      try {
+        renderStudy();
+      } catch (error) {
+        console.error(error);
+      }
       filterDictionary();
 
       var eraTabsNav = document.getElementById('era-tabs');
