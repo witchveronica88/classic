@@ -33,6 +33,8 @@
   --header-bg: rgba(243, 240, 235, .86);
   --star: #B7791F;
   --shadow: 0 6px 20px rgba(31, 27, 24, .12);
+  --radius: 16px;
+  --pad: 20px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -216,12 +218,13 @@ button { cursor: pointer; }
 .reading-card {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--card);
 }
 .record {
+  overflow: clip;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--card);
 }
 .record-top {
@@ -417,10 +420,10 @@ details:not([open]) > :not(summary) { display: none; }
 .study-search-wrap { position: relative; z-index: 5; margin: 0 0 16px; }
 .study-search {
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
   padding: 8px 16px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   outline: 0;
   background: var(--card);
   color: var(--text);
@@ -436,7 +439,7 @@ details:not([open]) > :not(summary) { display: none; }
   overflow-y: auto;
   box-shadow: var(--shadow);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--card);
 }
 .search-result {
@@ -539,67 +542,124 @@ details:not([open]) > :not(summary) { display: none; }
 .dictionary-subtab[aria-selected="true"] { color: var(--accent); font-weight: 700; }
 .dictionary-subpanel { line-height: 1.6; }
 
+.era-overviews { gap: 24px; }
 .era-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 20px 20px 0;
+}
+.era-index { color: var(--accent); font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.era-banner h3 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
+.era-years {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--subtle);
+  color: var(--muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.era-description { display: grid; gap: 20px; padding: 12px 20px 20px; line-height: 1.7; }
+.era-summary { margin: 0; font-size: 17px; }
+.section-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.era-section ul,
+.study-card-body ul,
+.key-guide { margin: 0; padding-left: 18px; color: var(--text); }
+.era-section li::marker,
+.study-card-body li::marker { color: var(--accent); }
+.callout {
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 10px 10px 4px;
+  background: var(--accent-soft);
+}
+.callout .section-label { color: var(--accent); }
+.callout p { margin: 0; }
+.callout ul { color: var(--text); }
+.chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip-list > * {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.chip-list > .study-link { color: var(--accent); }
+.chip-list > .study-link:hover { border-color: var(--accent); }
+.era-composer-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
-  padding: 16px 16px 0;
+  padding: 14px 20px 6px;
+  border-top: 1px solid var(--line);
+  background: var(--subtle);
 }
-.era-banner strong { font-size: 22px; font-weight: 700; line-height: 1.35; }
-.era-banner span { color: var(--muted); font-size: 14px; }
-.era-description { padding: 12px 16px 0; }
-.era-description > p { margin: 0; }
-.era-description > .era-first-listen { margin: 16px 0 0; padding-top: 16px; border-top: 1px solid var(--line); }
-.era-first-listen strong { display: block; margin-bottom: 4px; font-size: 16px; }
-.era-notes { margin-top: 8px; }
-.era-notes > summary { padding: 8px 0; }
-.era-notes-body { padding: 12px 0 16px; }
-.era-notes-body ul,
-.study-card-body ul,
-.key-guide { margin: 0; padding-left: 16px; color: var(--muted); }
+.era-composer-head .section-label { margin: 0; }
+.era-composer-head span { color: var(--muted); font-size: 14px; }
 .key-table { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 12px; }
 .key-cell { padding: 8px 4px; border-left: 1px solid var(--line); text-align: center; }
 .key-cell:first-child { border-left: 0; }
 .key-cell strong, .key-cell span { display: block; }
 .key-cell span { color: var(--muted); font-size: 14px; }
-.era-notes-body li + li,
+.era-section li + li,
+.callout li + li,
 .study-card-body li + li,
 .key-guide li + li { margin-top: 8px; }
-.era-genres { margin-top: 12px; }
-.era-genres .genre-text { color: var(--muted); font-size: 14px; font-weight: 400; }
-.era-genres .study-link {
-  min-height: 0;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 400;
-}
-.era-genres .study-link-list > * + *::before {
-  content: "·";
-  margin: 0 6px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 400;
-}
+.era-genres { margin-top: 16px; }
 .era-composer-list { border-top: 1px solid var(--line); }
 .nested-composer { border-top: 1px solid var(--line); }
 .nested-composer:first-child { border-top: 0; }
-.nested-composer > summary { min-height: 48px; padding: 8px 16px; }
-.composer-summary {
-  display: flex;
-  min-width: 0;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
+.nested-composer > summary { min-height: 56px; padding: 12px 20px; background: var(--card); }
+.nested-composer > summary:hover { background: var(--disclosure-bg); }
+.nested-composer[open] { box-shadow: inset 3px 0 0 var(--accent); }
+.nested-composer[open] > summary { background: var(--disclosure-bg); }
+.composer-summary { display: block; min-width: 0; }
+.composer-main { display: grid; gap: 2px; min-width: 0; }
+.composer-name-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.composer-name-line strong { color: var(--text); font-size: 17px; font-weight: 700; }
+.nested-composer[open] .composer-name-line strong { color: var(--accent); }
+.composer-years { flex: 0 0 auto; color: var(--muted); font-size: 14px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.composer-line {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
-.composer-summary strong { color: var(--accent); font-size: 16px; font-weight: 700; }
-.composer-years { flex: 0 0 auto; color: var(--muted); font-size: 14px; font-weight: 400; }
-.study-card-body { padding: 0 16px 16px; }
+.nested-composer[open] .composer-line { display: none; }
+.study-card-body { padding: 0 20px 20px; line-height: 1.7; }
 .study-card-body > p { margin: 0; }
-.composer-detail-name { padding: 16px 0 12px; color: var(--muted); font-size: 14px; }
-.study-card-body h4,
+.composer-detail-name { padding: 16px 0 8px; color: var(--muted); font-size: 14px; }
+.composer-intro { margin-bottom: 16px !important; font-size: 17px; }
+.study-card-body > .section-label { margin: 24px 0 8px; }
+.study-card-body h4:not(.section-label),
 .reading-card h4 { margin: 24px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.35; }
-.work-row.work-highlight { color: var(--accent); font-weight: 700; }
+.study-card-body ul.work-list,
+.study-card-body ul.life-list { padding: 0; list-style: none; }
+.work-row { padding: 10px 0; border-top: 1px solid var(--line); }
+.work-row:first-child { border-top: 0; padding-top: 0; }
+.study-card-body .work-row + .work-row { margin-top: 0; }
+.work-title { display: block; font-weight: 700; }
+.work-note { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+.work-row.work-highlight .work-title { color: var(--accent); }
+.life-list li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
+.life-year { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
 .related-block {
   display: flex;
   flex-wrap: wrap;
@@ -660,7 +720,7 @@ details:not([open]) > :not(summary) { display: none; }
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 16px 16px 4px;
+  padding: 16px var(--pad) 4px;
   color: var(--accent);
   font-size: 14px;
   font-weight: 700;
@@ -676,7 +736,7 @@ details:not([open]) > :not(summary) { display: none; }
   grid-template-columns: 64px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
-  padding: 8px 16px;
+  padding: 8px var(--pad);
   font-size: 16px;
   line-height: 1.6;
   text-align: left;
@@ -686,7 +746,7 @@ details:not([open]) > :not(summary) { display: none; }
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 90px;
+  left: calc(var(--pad) + 74px);
   width: 1px;
   background: var(--line);
 }
@@ -694,7 +754,7 @@ details:not([open]) > :not(summary) { display: none; }
   content: "";
   position: absolute;
   top: 18px;
-  left: 87px;
+  left: calc(var(--pad) + 71px);
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -789,6 +849,55 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .toast.show { opacity: 1; }
 
+/* Shared layout: every card uses --radius and --pad; nested lists are divider rows. */
+.record-top { padding: var(--pad); }
+.detail-body { padding: 0 var(--pad) var(--pad); }
+.record > details > summary {
+  min-height: 52px;
+  padding: 14px var(--pad);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.record > details > summary:hover,
+.nested-composer > summary:hover { background: var(--disclosure-bg); }
+.record > details[open] > summary { background: var(--disclosure-bg); }
+.program-detail .detail-body { padding-top: 4px; }
+.piece-list { border-radius: 0; }
+.performer-detail > summary,
+.piece-main > summary {
+  min-height: 52px;
+  padding: 12px 0;
+  background: transparent;
+}
+.performer-detail > p { padding: 0 0 16px; color: var(--text); }
+.piece-body { padding: 0 0 16px; }
+.piece-copy p,
+.soloist-info p { color: var(--text); line-height: 1.7; }
+.performer-detail[open] .performer-name,
+.piece-main[open] .piece-title { color: var(--accent); }
+.info-section h4,
+.soloist-info h4 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+.info-list { color: var(--text); }
+.stat { padding: 14px 16px; }
+.term-row { padding: 16px var(--pad); }
+.era-genres .chip-list > * {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.era-genres .chip-list > .study-link { color: var(--accent); }
+.study-tab[aria-selected="true"],
+.dictionary-subtab[aria-selected="true"] { box-shadow: inset 0 -2px 0 var(--accent); }
+.study-tabs { gap: 20px; }
+
 /* Stats, notes, calendar */
 .stats {
   display: grid;
@@ -799,7 +908,7 @@ details:not([open]) > :not(summary) { display: none; }
 .stat {
   padding: 12px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--card);
 }
 .stat strong { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; }
@@ -811,7 +920,7 @@ details:not([open]) > :not(summary) { display: none; }
   gap: 12px;
   margin: 0 0 16px;
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--accent-soft);
   color: var(--accent);
   font-size: 16px;
@@ -1287,9 +1396,12 @@ details:not([open]) > :not(summary) { display: none; }
       }
 
       function appendWorkList(parent, composer) {
-        var list = createElement('ul');
+        var list = createElement('ul', 'work-list');
         composer.works.forEach(function (work, workIndex) {
-          var item = createElement('li', 'work-row', work);
+          var parts = work.split(' — ');
+          var item = createElement('li', 'work-row');
+          item.appendChild(createElement('strong', 'work-title', parts[0]));
+          if (parts[1]) item.appendChild(createElement('span', 'work-note', parts.slice(1).join(' — ')));
           item.id = composerTargetId(composer.short) + '-work-' + (workIndex + 1);
           item.setAttribute('data-work-index', String(workIndex));
           list.appendChild(item);
@@ -1319,32 +1431,36 @@ details:not([open]) > :not(summary) { display: none; }
           group.setAttribute('data-era-card', era.name);
 
           var banner = createElement('div', 'era-banner');
-          banner.appendChild(createElement('strong', '', era.name));
-          var eraComposerCount = studyData.composers.filter(function (composer) { return composer.era === era.name; }).length;
-          banner.appendChild(createElement('span', '', era.years + ' · 작곡가 ' + eraComposerCount + '명'));
+          banner.appendChild(createElement('span', 'era-index', String(eraIndex + 1).padStart(2, '0')));
+          banner.appendChild(createElement('h3', '', era.name));
+          banner.appendChild(createElement('span', 'era-years', era.years));
           group.appendChild(banner);
 
           var description = createElement('div', 'era-description');
-          description.appendChild(createElement('p', '', era.summary));
-          var firstListen = createElement('p', 'era-first-listen');
-          firstListen.appendChild(createElement('strong', '', '먼저 들어 볼 곡'));
-          firstListen.appendChild(document.createTextNode(era.listen));
-          description.appendChild(firstListen);
-          var notes = createElement('details', 'era-notes');
-          var notesSummary = createElement('summary');
-          notesSummary.appendChild(createElement('span', '', '시대 특징 보기'));
-          notes.appendChild(notesSummary);
-          var notesBody = createElement('div', 'era-notes-body');
-          appendList(notesBody, era.points);
-          var genres = createElement('div', 'related-block era-genres');
-          genres.appendChild(createElement('span', 'related-label', '함께 보기'));
-          var genreLinks = createElement('div', 'study-link-list');
+          description.appendChild(createElement('p', 'era-summary', era.summary));
+
+          var features = createElement('section', 'era-section');
+          features.appendChild(createElement('h4', 'section-label', '시대 특징'));
+          appendList(features, era.points);
+          var genres = createElement('div', 'era-genres');
+          genres.appendChild(createElement('span', 'related-label', '주요 장르'));
+          var genreLinks = createElement('div', 'chip-list');
           appendGenreLinks(genreLinks, era.genres);
           genres.appendChild(genreLinks);
-          notesBody.appendChild(genres);
-          notes.appendChild(notesBody);
-          description.appendChild(notes);
+          features.appendChild(genres);
+          description.appendChild(features);
+
+          var firstListen = createElement('section', 'callout');
+          firstListen.appendChild(createElement('h4', 'section-label', '♪ 먼저 들어 볼 곡'));
+          firstListen.appendChild(createElement('p', '', era.listen));
+          description.appendChild(firstListen);
           group.appendChild(description);
+
+          var eraComposerCount = studyData.composers.filter(function (composer) { return composer.era === era.name; }).length;
+          var composerHead = createElement('div', 'era-composer-head');
+          composerHead.appendChild(createElement('h4', 'section-label', '작곡가'));
+          composerHead.appendChild(createElement('span', '', eraComposerCount + '명'));
+          group.appendChild(composerHead);
 
           var eraComposerList = createElement('div', 'era-composer-list');
           eraComposerList.setAttribute('data-era-composers', era.name);
@@ -1362,20 +1478,35 @@ details:not([open]) > :not(summary) { display: none; }
           var row = createElement('span', 'composer-summary');
           var fullKoreanName = composer.full.split(' (')[0];
           var lifespanMatch = composer.full.match(/(?:\d{4}(?:경)?–(?:\d{4}|),?)/);
-          row.appendChild(createElement('strong', '', fullKoreanName));
-          row.appendChild(createElement('span', 'composer-years', lifespanMatch ? lifespanMatch[0].replace(',', '') : ''));
+          var nameBlock = createElement('span', 'composer-main');
+          var nameLine = createElement('span', 'composer-name-line');
+          nameLine.appendChild(createElement('strong', '', fullKoreanName));
+          nameLine.appendChild(createElement('span', 'composer-years', lifespanMatch ? lifespanMatch[0].replace(',', '') : ''));
+          nameBlock.appendChild(nameLine);
+          nameBlock.appendChild(createElement('span', 'composer-line', composer.summary.split('. ')[0].replace(/\.$/, '')));
+          row.appendChild(nameBlock);
           summary.appendChild(row);
           card.appendChild(summary);
 
           var body = createElement('div', 'study-card-body');
           body.appendChild(createElement('p', 'composer-detail-name', composer.full.replace(/, \d{4}(?:경)?–(?:\d{4}|), /, ' · ')));
-          body.appendChild(createElement('p', '', composer.summary));
-          body.appendChild(createElement('h4', '', '듣기 포인트'));
-          appendList(body, composer.listening);
-          body.appendChild(createElement('h4', '', '대표곡'));
+          body.appendChild(createElement('p', 'composer-intro', composer.summary));
+          var listening = createElement('section', 'callout');
+          listening.appendChild(createElement('h4', 'section-label', '♪ 듣기 포인트'));
+          appendList(listening, composer.listening);
+          body.appendChild(listening);
+          body.appendChild(createElement('h4', 'section-label', '대표곡'));
           appendWorkList(body, composer);
-          body.appendChild(createElement('h4', '', '생애'));
-          appendList(body, composer.life);
+          body.appendChild(createElement('h4', 'section-label', '생애'));
+          var lifeList = createElement('ul', 'life-list');
+          composer.life.forEach(function (event) {
+            var item = createElement('li');
+            var yearMatch = event.match(/^(\d{4}(?:경|년대)?)\s+(.*)$/);
+            item.appendChild(createElement('span', 'life-year', yearMatch ? yearMatch[1] : ''));
+            item.appendChild(createElement('span', '', yearMatch ? yearMatch[2] : event));
+            lifeList.appendChild(item);
+          });
+          body.appendChild(lifeList);
           appendLinkGroup(body, '함께 보기', composer.together.split(', '), 'composer');
           if (composer.source) body.appendChild(createElement('p', 'composer-source', '출처: ' + composer.source));
 
@@ -2287,11 +2418,18 @@ details:not([open]) > :not(summary) { display: none; }
         var stats = document.getElementById('stats');
         var seen = Array.prototype.filter.call(records, function (record) { return record.getAttribute('data-status') === 'seen'; });
         var pieces = seen.reduce(function (sum, record) { return sum + record.querySelectorAll('.piece').length; }, 0);
+        var performers = {};
+        seen.forEach(function (record) {
+          record.querySelectorAll('.performer-name').forEach(function (node) { performers[node.textContent.trim()] = true; });
+          record.querySelectorAll('.piece-credit').forEach(function (node) {
+            node.textContent.split(' · ').slice(1).join(' · ').split(/,\s*/).forEach(function (name) { if (name.trim()) performers[name.trim()] = true; });
+          });
+        });
         var notes = readNotes();
         var noteCount = Array.prototype.filter.call(records, function (record) { return notes[recordKey(record)]; }).length;
         stats.textContent = '';
-        appendStat(stats, seen.length, '관람한 공연');
         appendStat(stats, pieces, '들은 작품');
+        appendStat(stats, Object.keys(performers).length, '만난 연주자');
         appendStat(stats, noteCount, '감상 노트');
       }
 
