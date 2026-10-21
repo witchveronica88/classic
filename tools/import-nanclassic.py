@@ -136,12 +136,12 @@ def build(sections):
     books = []
     for index, section in enumerate(sections):
         match = re.match(r'(\d+)권 · (.*?)\s+(\d+)개 글$', section['title'])
-        if match:
-            number, name, posts = int(match.group(1)), match.group(2), int(match.group(3))
-        else:
-            number, name, posts = None, re.sub(r'\s+\d+개 글$', '', section['title']), len(section['rows'])
+        # 권 번호가 없는 묶음(콘서트 프리뷰 같은 '기타')은 넣지 않는다.
+        if not match:
+            continue
+        number, name, posts = int(match.group(1)), match.group(2), int(match.group(3))
         book = {
-            'id': str(number) if number else 'etc',
+            'id': str(number),
             'number': number,
             'name': name,
             'posts': posts,

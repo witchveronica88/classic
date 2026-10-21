@@ -7740,34 +7740,6 @@ window.CLASSIC_LISTENING_DATA = {
           "post": "https://www.nantalk.kr/bbs/board.php?bo_table=enjoy_classic&wr_id=1897"
         }
       ]
-    },
-    {
-      "id": "etc",
-      "number": null,
-      "name": "기타",
-      "posts": 2,
-      "composers": [],
-      "key": [],
-      "keyPosts": [],
-      "playlists": [],
-      "tracks": [
-        {
-          "no": null,
-          "label": "콘서트 프리뷰",
-          "page": "",
-          "title": "〈네 손을 위한 피아노 소나타 C장조〉 K.521 1악장",
-          "url": "https://www.youtube.com/watch?v=Haeo5oLwANA",
-          "post": "https://www.nantalk.kr/bbs/board.php?bo_table=enjoy_classic&wr_id=75"
-        },
-        {
-          "no": null,
-          "label": "콘서트 프리뷰",
-          "page": "",
-          "title": "〈피아노 소나타 A장조〉 K.331 3악장",
-          "url": "https://www.youtube.com/watch?v=1VNU_uyF7Uo",
-          "post": "https://www.nantalk.kr/bbs/board.php?bo_table=enjoy_classic&wr_id=76"
-        }
-      ]
     }
   ]
 };

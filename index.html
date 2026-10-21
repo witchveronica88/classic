@@ -438,39 +438,31 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--accent-soft);
   color: var(--accent);
 }
-/* 듣기: 난처한 클래식 수록곡 줄 — [스피커 번호 · 쪽수 · 원글 / 곡 이름 ↗][들음 체크] */
+/* 듣기: 난처한 클래식 수록곡 줄 — [번호(원글)] [곡 이름 ↗(유튜브)] 한 줄 */
 .track {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 12px;
-  align-items: center;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
 .track:first-child { border-top: 0; }
-.track-meta { display: flex; flex-wrap: wrap; gap: 0 8px; color: var(--muted); font-size: var(--fs-s); line-height: 1.5; }
-.track-post { color: var(--muted); }
+.track-no {
+  flex: none;
+  min-width: 3.5em;
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+.track-title { flex: 1; min-width: 0; }
 .track-link { color: var(--text); font-size: var(--fs-m); line-height: 1.5; text-decoration: none; }
 .track-link::after { content: " ↗"; color: var(--accent); }
-.track-check {
-  grid-row: 1 / span 2;
-  grid-column: 2;
-  display: inline-grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1.5px solid var(--line);
-  border-radius: 50%;
-  background: transparent;
-  color: transparent;
-  font-size: var(--fs-s);
-  font-weight: 700;
-}
-.track-check[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--card); }
-.track.is-done .track-link { color: var(--muted); }
-.book-progress { color: var(--muted); }
-.book-progress strong { color: var(--accent); }
+.track-page { color: var(--muted); font-size: var(--fs-s); white-space: nowrap; }
 .book-links { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: var(--fs-s); }
+.detail-body > .book-links { margin: 12px 0 0; padding-bottom: 12px; }
 .book-links a { color: var(--accent); text-decoration: none; }
 .book-links a::after { content: " ↗"; }
 /* 카드 머리: 시대 · 사전 카드의 제목 줄 (공연 카드의 record-top에 해당) */
@@ -1129,7 +1121,7 @@ details:not([open]) > :not(summary) { display: none; }
   <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
   <script src="study-data.js?v=6"></script>
   <!-- listening-data.js도 고치면 ?v= 숫자를 올린다. -->
-  <script src="listening-data.js?v=1"></script>
+  <script src="listening-data.js?v=2"></script>
   <script>
     (function () {
       var primaryTabs = document.querySelectorAll('.primary-tab');
@@ -1137,7 +1129,6 @@ details:not([open]) > :not(summary) { display: none; }
       var studyView = document.getElementById('study-view');
       var studyData = window.CLASSIC_STUDY_DATA;
       var listeningData = window.CLASSIC_LISTENING_DATA || { books: [] };
-      var LISTENED_KEY = 'classic-listened-v1';
       var studyPanels = document.querySelectorAll('.study-panel');
       var records = document.querySelectorAll('.record');
       var toast = document.getElementById('toast');
@@ -1602,71 +1593,35 @@ details:not([open]) > :not(summary) { display: none; }
       }
 
       // 듣기: 난처한 클래식 권마다 카드 하나. 중요곡과 스피커 번호 10개씩 묶음이 ＋ 줄이 된다.
-      function readListened() {
-        try { return JSON.parse(storageGet(LISTENED_KEY)) || {}; } catch (error) { return {}; }
-      }
-
-      // 들음 표시는 권 + 스피커 번호로 묶는다. 중요곡과 수록곡이 다른 영상이어도 같은 곡으로 센다.
-      function trackKey(book, track) {
-        if (track.no !== null && track.no !== undefined) return book.id + '-' + track.no;
-        var match = String(track.url).match(/(?:[?&]v=|youtu\.be\/)([\w-]{6,})/);
-        return match ? match[1] : String(track.url);
-      }
-
       function trackElementId(book, index) {
         return 'track-' + book.id + '-' + (index + 1);
       }
 
-      function updateBookProgress() {
-        var listened = readListened();
-        listeningData.books.forEach(function (book) {
-          var progress = document.querySelector('[data-book-progress="' + book.id + '"]');
-          if (!progress) return;
-          var done = book.tracks.filter(function (track) { return listened[trackKey(book, track)]; }).length;
-          progress.textContent = '';
-          progress.appendChild(createElement('strong', '', done + ' / ' + book.tracks.length + '곡'));
-          progress.appendChild(document.createTextNode(' 들음' + (book.key.length ? ' · 중요곡 ' + book.key.length + '곡' : '')));
-        });
-        document.querySelectorAll('.track').forEach(function (row) {
-          var done = !!listened[row.getAttribute('data-track-key')];
-          row.classList.toggle('is-done', done);
-          row.querySelector('.track-check').setAttribute('aria-pressed', done ? 'true' : 'false');
-        });
+      function createExternalLink(className, text, url) {
+        var link = createElement('a', className, text);
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        return link;
       }
 
-      function createTrackRow(book, track, id) {
+      // 번호를 누르면 난톡 원글, 곡 이름을 누르면 유튜브가 열린다.
+      function createTrackRow(track, post, id) {
         var row = createElement('div', 'track');
         if (id) row.id = id;
         row.tabIndex = -1;
-        row.setAttribute('data-track-key', trackKey(book, track));
-        var meta = createElement('div', 'track-meta');
-        meta.appendChild(createElement('span', '', [track.label, track.page].filter(Boolean).join(' · ')));
-        if (track.post) {
-          var post = createElement('a', 'track-post', '원글');
-          post.href = track.post;
-          post.target = '_blank';
-          post.rel = 'noopener noreferrer';
-          meta.appendChild(post);
+        var no = track.label.replace(/^스피커 /, '');
+        if (post) {
+          var postLink = createExternalLink('track-no', no, post);
+          postLink.setAttribute('aria-label', track.label + ' 원글');
+          row.appendChild(postLink);
+        } else {
+          row.appendChild(createElement('span', 'track-no', no));
         }
-        row.appendChild(meta);
-        var link = createElement('a', 'track-link', track.title);
-        link.href = track.url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        row.appendChild(link);
-        var check = createElement('button', 'track-check', '✓');
-        check.type = 'button';
-        check.setAttribute('aria-pressed', 'false');
-        check.setAttribute('aria-label', track.title + ' 들었음 표시');
-        check.addEventListener('click', function () {
-          var listened = readListened();
-          var key = row.getAttribute('data-track-key');
-          if (listened[key]) delete listened[key];
-          else listened[key] = new Date().toISOString().slice(0, 10);
-          if (!storageSet(LISTENED_KEY, JSON.stringify(listened))) showToast('이 브라우저에서는 저장할 수 없습니다');
-          updateBookProgress();
-        });
-        row.appendChild(check);
+        var title = createElement('span', 'track-title');
+        title.appendChild(createExternalLink('track-link', track.title, track.url));
+        if (track.page) title.appendChild(createElement('span', 'track-page', ' ' + track.page));
+        row.appendChild(title);
         return row;
       }
 
@@ -1675,32 +1630,25 @@ details:not([open]) > :not(summary) { display: none; }
         listeningData.books.forEach(function (book) {
           var card = createElement('section', 'fold-card');
           card.setAttribute('data-book-card', book.id);
-          var title = book.number ? book.number + '권 · ' + book.name : book.name;
-          var head = createFoldHead(title, book.tracks.length + '곡', '');
-          var progress = createElement('p', 'book-progress');
-          progress.setAttribute('data-book-progress', book.id);
-          head.appendChild(progress);
-          var links = createElement('div', 'book-links');
-          book.playlists.forEach(function (playlist) {
-            var link = createElement('a', '', /플레이리스트|재생목록/.test(playlist.title) ? '중요곡 재생목록' : '전체 재생 링크');
-            link.href = playlist.url;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            links.appendChild(link);
-          });
-          if (book.keyPosts.length) {
-            var keyPost = createElement('a', '', '중요곡 모음 원글');
-            keyPost.href = book.keyPosts[0];
-            keyPost.target = '_blank';
-            keyPost.rel = 'noopener noreferrer';
-            links.appendChild(keyPost);
+          var head = createFoldHead(book.number + '권 · ' + book.name, book.tracks.length + '곡', '');
+          var keyPlaylists = book.playlists.filter(function (playlist) { return /플레이리스트|재생목록/.test(playlist.title); });
+          var otherPlaylists = book.playlists.filter(function (playlist) { return keyPlaylists.indexOf(playlist) === -1; });
+          if (otherPlaylists.length) {
+            var links = createElement('div', 'book-links');
+            otherPlaylists.forEach(function (playlist) { links.appendChild(createExternalLink('', '전체 재생 링크', playlist.url)); });
+            head.appendChild(links);
           }
-          if (links.children.length) head.appendChild(links);
           card.appendChild(head);
 
+          var posts = {};
+          book.tracks.forEach(function (track) { if (track.no !== null && track.post) posts[track.no] = track.post; });
           if (book.key.length) {
             var key = createFoldSection('★ 중요곡', book.key.length + '곡', 'row-list');
-            book.key.forEach(function (track) { key.body.appendChild(createTrackRow(book, track)); });
+            var keyLinks = createElement('div', 'book-links');
+            book.keyPosts.forEach(function (post) { keyLinks.appendChild(createExternalLink('', '중요곡 모음 원글', post)); });
+            keyPlaylists.forEach(function (playlist) { keyLinks.appendChild(createExternalLink('', '중요곡 재생목록', playlist.url)); });
+            if (keyLinks.children.length) key.body.appendChild(keyLinks);
+            book.key.forEach(function (track) { key.body.appendChild(createTrackRow(track, posts[track.no])); });
             card.appendChild(key.section);
           }
           for (var start = 0; start < book.tracks.length; start += 10) {
@@ -1708,12 +1656,11 @@ details:not([open]) > :not(summary) { display: none; }
             var numbers = chunk.map(function (track) { return track.no; }).filter(function (no) { return no !== null; });
             var label = numbers.length ? '스피커 ' + numbers[0] + '–' + numbers[numbers.length - 1] + '번' : '수록곡';
             var group = createFoldSection(label, chunk.length + '곡', 'row-list');
-            chunk.forEach(function (track, offset) { group.body.appendChild(createTrackRow(book, track, trackElementId(book, start + offset))); });
+            chunk.forEach(function (track, offset) { group.body.appendChild(createTrackRow(track, track.post, trackElementId(book, start + offset))); });
             card.appendChild(group.section);
           }
           bookList.appendChild(card);
         });
-        updateBookProgress();
       }
 
       function activateStudySection(section) {
@@ -1897,7 +1844,7 @@ details:not([open]) > :not(summary) { display: none; }
         });
         listeningData.books.forEach(function (book) {
           book.tracks.forEach(function (track, index) {
-            entries.push({ kind: 'track', type: '듣기', title: track.title, subtitle: (book.number ? book.number + '권 · ' : '') + track.label, value: trackElementId(book, index), search: [track.title, track.label, book.name, '난처한 클래식'].join(' ') });
+            entries.push({ kind: 'track', type: '듣기', title: track.title, subtitle: book.number + '권 · ' + track.label, value: trackElementId(book, index), search: [track.title, track.label, book.name, '난처한 클래식'].join(' ') });
           });
         });
         studyData.reading.catalogues.forEach(function (item) {
@@ -2042,7 +1989,7 @@ details:not([open]) > :not(summary) { display: none; }
       var selectDictionaryCard = setupCardTabs(document.getElementById('dictionary-tabs'), document.getElementById('dictionary-list'), 'data-dictionary-category', 'classic-dictionary', {});
 
       var bookTabLabels = {};
-      listeningData.books.forEach(function (book) { bookTabLabels[book.id] = book.number ? book.number + '권 ' + book.name : book.name; });
+      listeningData.books.forEach(function (book) { bookTabLabels[book.id] = book.number + '권 ' + book.name; });
       var selectBookCard = setupCardTabs(document.getElementById('book-tabs'), document.getElementById('book-list'), 'data-book-card', 'classic-book', bookTabLabels);
 
       function showCardFor(node) {
