@@ -30,8 +30,8 @@
   --rule: #CDBFAE;
   --pad: 20px;
   /* 글자 크기는 네 단계만 쓴다 (모든 저장소 공통 디자인 규칙) */
-  --fs-xl: 24px; /* 화면 제목, 큰 숫자 */
-  --fs-l: 18px;  /* 소제목(섹션 제목) */
+  --fs-xl: 24px; /* 큰 숫자(날짜 · 통계) */
+  --fs-l: 18px;  /* 카드 제목, 소제목(섹션 제목), 맨 위 앱 이름 */
   --fs-m: 16px;  /* 본문, 입력창 */
   --fs-s: 14px;  /* 보조 글(설명, 메모, 표, 탭) */
 }
@@ -222,7 +222,7 @@ button { cursor: pointer; }
 .record[data-status="seen"] .record-rating { margin-left: 0; }
 .record h3 {
   margin: 0;
-  font-size: var(--fs-xl);
+  font-size: var(--fs-l);
   font-weight: 700;
   line-height: 1.35;
   text-wrap: balance;
@@ -441,7 +441,7 @@ details:not([open]) > :not(summary) { display: none; }
 /* 카드 머리: 시대 · 사전 카드의 제목 줄 (공연 카드의 record-top에 해당) */
 .fold-head { padding: var(--pad); border-bottom: 1px solid var(--line); }
 .fold-title { display: flex; align-items: baseline; gap: 10px; }
-.fold-title h3 { min-width: 0; margin: 0; font-size: var(--fs-xl); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; text-wrap: balance; }
+.fold-title h3 { min-width: 0; margin: 0; font-size: var(--fs-l); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; text-wrap: balance; }
 .fold-head p { margin: 8px 0 0; line-height: 1.7; }
 .era-index { color: var(--accent); font-size: var(--fs-s); font-weight: 700; font-variant-numeric: tabular-nums; }
 .card-badge {
@@ -672,9 +672,7 @@ details:not([open]) > :not(summary) { display: none; }
   padding: 12px 0;
   background: transparent;
 }
-/* 펼친 내용은 제목 줄 아래 구분선에서 띄우고, 제목과 같은 왼쪽 선에 맞춘다 */
-.performer-detail > p { padding: 12px 0 16px; color: var(--text); }
-.piece-body { padding: 12px 0 16px; }
+.performer-detail > p { color: var(--text); }
 .piece-copy p,
 .soloist-info p { color: var(--text); line-height: 1.7; }
 /* 펼친 줄의 제목은 내용을 읽는 동안 위에 붙어 있다.
@@ -689,8 +687,9 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--disclosure-bg);
   box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
-/* 펼친 줄은 제목 줄에만 옅은 배경을 깐다. 안쪽 제목 줄의 배경은 카드 폭 전체로 넓히되 글은 제자리에 두고,
-   바깥 컬러바가 가려지지 않게 같은 막대를 다시 그린다. */
+/* 한 단계 안쪽 줄(출연자 · 곡 · 작곡가 · 용어)은 바깥 줄과 구분되게: 제목 줄 배경은 안쪽 폭에만(모서리 둥글게),
+   컬러바 없음, 펼친 내용은 왼쪽 안내선과 함께 한 칸 들여 쓴다.
+   위에 붙어 있을 때 배경 바깥 틈으로 글이 비치지 않게 카드색 테를 두른다. */
 .performer-detail[open] > summary,
 .piece-main[open] > summary,
 .nested-composer[open] > summary,
@@ -698,21 +697,35 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: calc(var(--stick) + 52px);
   z-index: 2;
+  margin: 0 -12px;
+  padding-right: 12px;
+  padding-left: 12px;
+  border-radius: 8px;
+  background: var(--disclosure-bg);
+  box-shadow: 0 0 0 5px var(--card);
+}
+.performer-detail > p,
+.piece-main > .piece-body,
+.nested-composer > .study-card-body,
+.term-row > .term-body {
+  margin: 4px 0 8px;
+  padding: 8px 0 8px 14px;
+  border-left: 2px solid var(--line);
+}
+/* 사전 카드에 바로 나오는 용어 줄은 카드의 첫 단계라서 바깥 줄과 같은 모양:
+   카드 폭 전체 배경, 펼친 내용까지 카드 왼쪽 끝에 컬러바를 이어 세운다 */
+.fold-list .term-row[open] > summary {
+  top: var(--stick);
   margin: 0 calc(-1 * var(--pad));
   padding-right: var(--pad);
   padding-left: var(--pad);
-  background: var(--disclosure-bg);
-  box-shadow: 0 1px 0 var(--line);
+  border-radius: 0;
+  box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
-.record > details[open] details[open] > summary,
-.fold-card > details[open] details[open] > summary,
-.fold-list .term-row[open] > summary { box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line); }
-/* 사전 카드에 바로 나오는 용어 줄은 카드의 첫 단계라서, 펼친 내용까지 카드 왼쪽 끝에 컬러바를 이어 세운다 */
-.fold-list .term-row[open] > summary { top: var(--stick); }
 .fold-list .term-row[open] > .term-body {
   margin: 0 calc(-1 * var(--pad));
-  padding-right: var(--pad);
-  padding-left: var(--pad);
+  padding: 12px var(--pad) 16px;
+  border-left: 0;
   box-shadow: inset 3px 0 0 var(--accent);
 }
 .info-section h4,
