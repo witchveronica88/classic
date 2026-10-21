@@ -19,11 +19,13 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "힐데가르트 「오 지혜의 힘이여」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=D2aNFgqszeM",
+          "why": "반주 없는 한 줄 선율로 부르는 중세 성가가 어떤 소리인지 가장 쉽게 느낄 수 있음"
         },
         {
           "text": "팔레스트리나 「교황 마르첼루스 미사」 중 「키리에」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=EJj0as_Mic4",
+          "why": "여러 성부가 얽히면서도 가사가 또렷이 들리는 르네상스 다성음악의 본보기"
         }
       ],
       "background": [
@@ -55,15 +57,18 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "비발디 「사계」 중 「봄」 1악장",
-          "url": "https://www.youtube.com/watch?v=e3nSvIiBNFo"
+          "url": "https://www.youtube.com/watch?v=e3nSvIiBNFo",
+          "why": "새소리 · 시냇물 · 천둥을 악기로 그린 곡으로, 독주와 합주가 주고받는 바로크 협주곡의 짜임이 바로 들림"
         },
         {
           "text": "바흐 「무반주 첼로 모음곡 1번」 전주곡",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=1prweT95Mo0",
+          "why": "악기 하나로 선율과 화음을 함께 그려 내는 바흐의 짜임을 가장 단순하게 들을 수 있음"
         },
         {
           "text": "헨델 「메시아」 중 「할렐루야」",
-          "url": "https://www.youtube.com/watch?v=AKkE2TPdCt8"
+          "url": "https://www.youtube.com/watch?v=AKkE2TPdCt8",
+          "why": "합창과 관현악이 힘차게 주고받는, 바로크 오라토리오의 대표 장면"
         }
       ],
       "background": [
@@ -91,15 +96,18 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "하이든 교향곡 94번 「놀람」 2악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=lLjwkamp3lI",
+          "why": "조용한 선율 끝에 갑자기 큰 화음이 터지는 곡으로, 고전 시대의 또렷한 주제와 변주 형식을 익히기 좋음"
         },
         {
           "text": "모차르트 교향곡 40번 1악장",
-          "url": "https://www.youtube.com/watch?v=Xwomy9aPpfM"
+          "url": "https://www.youtube.com/watch?v=Xwomy9aPpfM",
+          "why": "모차르트의 드문 단조 교향곡으로, 첫 선율 하나가 소나타 형식 안에서 어떻게 펼쳐지는지 듣기 좋음"
         },
         {
           "text": "베토벤 교향곡 5번 1악장",
-          "url": "https://www.youtube.com/watch?v=I7AQeN-x_Xs&t=72s"
+          "url": "https://www.youtube.com/watch?v=I7AQeN-x_Xs&t=72s",
+          "why": "'따따따 딴' 네 음 동기 하나가 악장 전체를 끌고 가는 힘을 바로 느낄 수 있음"
         }
       ],
       "background": [
@@ -133,15 +141,18 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "슈베르트 「마왕」",
-          "url": "https://www.youtube.com/watch?v=JS91p-vmSf0"
+          "url": "https://www.youtube.com/watch?v=JS91p-vmSf0",
+          "why": "한 가수가 해설자 · 아버지 · 아들 · 마왕을 목소리로 나눠 부르고 피아노가 말발굽을 그리는 낭만 가곡의 대표곡"
         },
         {
           "text": "쇼팽 녹턴 Op. 9 No. 2",
-          "url": "https://www.youtube.com/watch?v=UaewK5gZcq4"
+          "url": "https://www.youtube.com/watch?v=UaewK5gZcq4",
+          "why": "노래하듯 흐르는 선율과 장식음으로 낭만 시대 피아노 소품의 서정을 한 번에 알 수 있음"
         },
         {
           "text": "베를리오즈 「환상 교향곡」 4악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=598i8b3HGrw",
+          "why": "이야기를 그리는 표제음악의 대표작으로, 끝에 연인의 선율(고정악상)이 나왔다가 단칼에 끊김"
         }
       ],
       "background": [
@@ -187,15 +198,18 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "바그너 「발퀴레의 기행」",
-          "url": "https://www.youtube.com/watch?v=nZ_zNUmr8fM"
+          "url": "https://www.youtube.com/watch?v=nZ_zNUmr8fM",
+          "why": "거대한 관현악과 유도동기가 어떤 힘을 내는지 한 번에 느낄 수 있음"
         },
         {
           "text": "차이콥스키 「호두까기 인형」 중 「꽃의 왈츠」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=Zp1aDnVySf8",
+          "why": "하프 카덴차로 열리는 화려한 왈츠로, 차이콥스키의 선율과 관현악 색채를 즐기기 좋음"
         },
         {
           "text": "드보르자크 「신세계로부터」 4악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=BloAAYPpuE4",
+          "why": "강렬한 첫 주제에 앞 악장들의 주제가 다시 돌아오는 피날레로, 민속풍 선율과 교향곡의 웅장함을 함께 들을 수 있음"
         }
       ],
       "background": [
@@ -239,15 +253,18 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "드뷔시 「목신의 오후 전주곡」",
-          "url": "https://www.youtube.com/watch?v=8UAYCubihlc"
+          "url": "https://www.youtube.com/watch?v=8UAYCubihlc",
+          "why": "플루트 독주로 시작해 또렷한 박자 대신 색채와 분위기로 흐르는, 인상주의 음악의 출발점"
         },
         {
           "text": "라벨 「볼레로」",
-          "url": "https://www.youtube.com/watch?v=cmNEvSFWftc"
+          "url": "https://www.youtube.com/watch?v=cmNEvSFWftc",
+          "why": "같은 선율을 악기만 바꿔 가며 점점 크게 되풀이해, 악기마다 다른 소리 색을 귀로 익히기 좋음"
         },
         {
           "text": "스트라빈스키 「봄의 제전」 중 「봄의 징조」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=jwcPdC548dM",
+          "why": "같은 화음을 불규칙한 강세로 내리치는 리듬으로, 20세기 음악이 리듬을 어떻게 바꿨는지 바로 느낄 수 있음"
         }
       ],
       "background": [

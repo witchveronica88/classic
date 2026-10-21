@@ -53,7 +53,7 @@
   - 사전 용어는 `{ "category", "name", "description"(한 줄 정의), "detail"(자세한 설명, 문단은 빈 줄로 나눔), "listen"(들어 볼 곡, 선택) }` 형식입니다. 악기 · 편성 · 작품번호 항목은 `["이름", "한 줄 정의", "자세한 설명"]`입니다.
   - 시대의 `background`는 '시대 배경'에 나오는 문단 목록입니다.
   - `study-data.js`를 고친 뒤에는 `index.html`의 `study-data.js?v=` 숫자를 하나 올립니다.
-  - 시대별 **먼저 들어 볼 곡**은 `eras[].listen`에 곡마다 `{ "text": "곡 이름", "url": "" }`로 적습니다. `url`에 영상 주소를 넣으면 그 곡이 링크가 됩니다.
+  - 시대별 **먼저 들어 볼 곡**은 `eras[].listen`에 곡마다 `{ "text": "곡 이름", "url": "", "why": "" }`로 적습니다. `url`에 영상 주소를 넣으면 그 곡이 링크가 되고, `why`에는 왜 먼저 들으면 좋은지 한 줄로 적습니다(마침표 없이).
 
 - **난처한 클래식 목록 갱신**: 「수록 음악 듣기」 HTML을 새로 모았다면 `python3 tools/import-nanclassic.py 파일.html listening-data.js`를 실행하고 `index.html`의 `listening-data.js?v=` 숫자를 하나 올립니다. 권과 작곡가 연결은 도구 안의 `BOOK_COMPOSERS`에서 정합니다.
 

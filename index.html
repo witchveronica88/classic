@@ -507,6 +507,8 @@ details:not([open]) > :not(summary) { display: none; }
 .study-card-body li::marker { color: var(--accent); }
 .listen-link { color: var(--accent); font-weight: 700; text-decoration: none; }
 .listen-link::after { content: " ↗"; font-weight: 400; }
+/* 먼저 들어 볼 곡: 곡 이름 아래에 왜 먼저 듣는지 한 줄 */
+.listen-why { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-s); font-weight: 400; line-height: 1.6; }
 .dot-list { margin-top: 4px; }
 .dot-list > * { display: inline; }
 .dot-list .study-link { display: inline; min-height: 0; padding: 0; font-size: var(--fs-m); font-weight: 500; }
@@ -1125,7 +1127,7 @@ details:not([open]) > :not(summary) { display: none; }
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
-  <script src="study-data.js?v=5"></script>
+  <script src="study-data.js?v=6"></script>
   <!-- listening-data.js도 고치면 ?v= 숫자를 올린다. -->
   <script src="listening-data.js?v=1"></script>
   <script>
@@ -1337,8 +1339,9 @@ details:not([open]) > :not(summary) { display: none; }
               link.rel = 'noopener noreferrer';
               row.appendChild(link);
             } else {
-              row.textContent = item.text;
+              row.appendChild(document.createTextNode(item.text));
             }
+            if (item.why) row.appendChild(createElement('span', 'listen-why', item.why));
             listenList.appendChild(row);
           });
           listen.body.appendChild(listenList);
