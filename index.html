@@ -687,9 +687,9 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--disclosure-bg);
   box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
-/* 한 단계 안쪽 줄(출연자 · 곡 · 작곡가 · 용어)은 바깥 줄과 구분되게: 제목 줄 배경은 안쪽 폭에만(모서리 둥글게),
-   컬러바 없음, 펼친 내용은 왼쪽 안내선과 함께 한 칸 들여 쓴다.
-   위에 붙어 있을 때 배경 바깥 틈으로 글이 비치지 않게 카드색 테를 두른다. */
+/* 한 단계 안쪽 줄(출연자 · 곡 · 작곡가 · 용어)도 제목 줄 배경은 카드 폭 전체로 깔고 글은 제자리에 둔다.
+   새 막대는 두지 않고, 배경이 덮는 바깥 줄 컬러바만 같은 자리에 다시 그려 끊기지 않게 한다.
+   한 단계 안쪽이라는 건 펼친 내용의 왼쪽 안내선과 들여쓰기로 보여 준다. */
 .performer-detail[open] > summary,
 .piece-main[open] > summary,
 .nested-composer[open] > summary,
@@ -697,12 +697,11 @@ details:not([open]) > :not(summary) { display: none; }
   position: sticky;
   top: calc(var(--stick) + 52px);
   z-index: 2;
-  margin: 0 -12px;
-  padding-right: 12px;
-  padding-left: 12px;
-  border-radius: 8px;
+  margin: 0 calc(-1 * var(--pad));
+  padding-right: var(--pad);
+  padding-left: var(--pad);
   background: var(--disclosure-bg);
-  box-shadow: 0 0 0 5px var(--card);
+  box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
 }
 .performer-detail > p,
 .piece-main > .piece-body,
@@ -713,15 +712,8 @@ details:not([open]) > :not(summary) { display: none; }
   border-left: 2px solid var(--line);
 }
 /* 사전 카드에 바로 나오는 용어 줄은 카드의 첫 단계라서 바깥 줄과 같은 모양:
-   카드 폭 전체 배경, 펼친 내용까지 카드 왼쪽 끝에 컬러바를 이어 세운다 */
-.fold-list .term-row[open] > summary {
-  top: var(--stick);
-  margin: 0 calc(-1 * var(--pad));
-  padding-right: var(--pad);
-  padding-left: var(--pad);
-  border-radius: 0;
-  box-shadow: inset 3px 0 0 var(--accent), 0 1px 0 var(--line);
-}
+   펼친 내용은 들여 쓰지 않고, 카드 왼쪽 끝에 컬러바를 이어 세운다 */
+.fold-list .term-row[open] > summary { top: var(--stick); }
 .fold-list .term-row[open] > .term-body {
   margin: 0 calc(-1 * var(--pad));
   padding: 12px var(--pad) 16px;
