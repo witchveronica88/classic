@@ -1414,7 +1414,9 @@ details:not([open]) > :not(summary) { display: none; }
           card.appendChild(summary);
 
           var body = createElement('div', 'study-card-body');
-          body.appendChild(createElement('p', 'composer-detail-name', composer.full.replace(/, \d{4}(?:경)?–(?:\d{4}|), /, ' · ')));
+          // 한글 이름은 제목 줄에 있으니 펼친 쪽에는 원어 이름 · 나라만 쓴다.
+          var originMatch = composer.full.match(/^[^(]+\((.+)\), \d{4}(?:경)?–(?:\d{4})?, (.+)$/);
+          body.appendChild(createElement('p', 'composer-detail-name', originMatch ? originMatch[1] + ' · ' + originMatch[2] : composer.full));
           body.appendChild(createElement('p', 'composer-intro', composer.summary));
           var listening = createElement('section', 'listen-points');
           listening.appendChild(createElement('h4', 'section-label', '듣기 포인트'));
