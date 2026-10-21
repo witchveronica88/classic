@@ -55,7 +55,7 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "비발디 「사계」 중 「봄」 1악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=e3nSvIiBNFo"
         },
         {
           "text": "바흐 「무반주 첼로 모음곡 1번」 전주곡",
@@ -63,7 +63,7 @@ window.CLASSIC_STUDY_DATA = {
         },
         {
           "text": "헨델 「메시아」 중 「할렐루야」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=AKkE2TPdCt8"
         }
       ],
       "background": [
@@ -95,11 +95,11 @@ window.CLASSIC_STUDY_DATA = {
         },
         {
           "text": "모차르트 교향곡 40번 1악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=Xwomy9aPpfM"
         },
         {
           "text": "베토벤 교향곡 5번 1악장",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=I7AQeN-x_Xs&t=72s"
         }
       ],
       "background": [
@@ -133,11 +133,11 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "슈베르트 「마왕」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=JS91p-vmSf0"
         },
         {
           "text": "쇼팽 녹턴 Op. 9 No. 2",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=UaewK5gZcq4"
         },
         {
           "text": "베를리오즈 「환상 교향곡」 4악장",
@@ -187,7 +187,7 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "바그너 「발퀴레의 기행」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=nZ_zNUmr8fM"
         },
         {
           "text": "차이콥스키 「호두까기 인형」 중 「꽃의 왈츠」",
@@ -239,11 +239,11 @@ window.CLASSIC_STUDY_DATA = {
       "listen": [
         {
           "text": "드뷔시 「목신의 오후 전주곡」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=8UAYCubihlc"
         },
         {
           "text": "라벨 「볼레로」",
-          "url": ""
+          "url": "https://www.youtube.com/watch?v=cmNEvSFWftc"
         },
         {
           "text": "스트라빈스키 「봄의 제전」 중 「봄의 징조」",
