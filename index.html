@@ -142,7 +142,7 @@ button { cursor: pointer; }
 }
 .primary-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   width: min(100%, 560px);
   margin: 0 auto;
 }
@@ -438,6 +438,41 @@ details:not([open]) > :not(summary) { display: none; }
   background: var(--accent-soft);
   color: var(--accent);
 }
+/* 듣기: 난처한 클래식 수록곡 줄 — [스피커 번호 · 쪽수 · 원글 / 곡 이름 ↗][들음 체크] */
+.track {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.track:first-child { border-top: 0; }
+.track-meta { display: flex; flex-wrap: wrap; gap: 0 8px; color: var(--muted); font-size: var(--fs-s); line-height: 1.5; }
+.track-post { color: var(--muted); }
+.track-link { color: var(--text); font-size: var(--fs-m); line-height: 1.5; text-decoration: none; }
+.track-link::after { content: " ↗"; color: var(--accent); }
+.track-check {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  font-size: var(--fs-s);
+  font-weight: 700;
+}
+.track-check[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--card); }
+.track.is-done .track-link { color: var(--muted); }
+.book-progress { color: var(--muted); }
+.book-progress strong { color: var(--accent); }
+.book-links { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: var(--fs-s); }
+.book-links a { color: var(--accent); text-decoration: none; }
+.book-links a::after { content: " ↗"; }
 /* 카드 머리: 시대 · 사전 카드의 제목 줄 (공연 카드의 record-top에 해당) */
 .fold-head { padding: var(--pad); border-bottom: 1px solid var(--line); }
 .fold-title { display: flex; align-items: baseline; gap: 10px; }
@@ -776,7 +811,7 @@ details:not([open]) > :not(summary) { display: none; }
 .search-result.is-active { background: var(--accent-soft); }
 .search-result mark { background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .fold-card, [data-era-timeline], .fold-list .term-row { scroll-margin-top: 72px; }
-.composer-card, .work-row, .term-row, .piece-main, .performer-detail { scroll-margin-top: 124px; }
+.composer-card, .work-row, .term-row, .piece-main, .performer-detail, .track { scroll-margin-top: 124px; }
 .records > .record { scroll-margin-top: 16px; }
 .record > details,
 .fold-card > details { scroll-margin-top: var(--stick); }
@@ -821,6 +856,7 @@ details:not([open]) > :not(summary) { display: none; }
         <button class="primary-tab" id="tab-performances" type="button" role="tab" aria-controls="performance-view" aria-selected="true" data-view="performances"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2.2"/></svg><span>공연 기록</span></button>
         <button class="primary-tab" id="tab-eras" type="button" role="tab" aria-controls="study-eras" aria-selected="false" data-view="study" data-study-section="eras"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>시대 · 작곡가</span></button>
         <button class="primary-tab" id="tab-dictionary" type="button" role="tab" aria-controls="study-dictionary" aria-selected="false" data-view="study" data-study-section="dictionary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.5 5.3 8.3 4.8 5 5v13c3.3-.2 5.5.3 7 1.5 1.5-1.2 3.7-1.7 7-1.5V5c-3.3-.2-5.5.3-7 1.5z"/><path d="M12 6.5v13"/></svg><span>클래식 사전</span></button>
+        <button class="primary-tab" id="tab-listen" type="button" role="tab" aria-controls="study-listen" aria-selected="false" data-view="study" data-study-section="listen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.5"/></svg><span>듣기</span></button>
       </div>
     </nav>
 
@@ -1076,6 +1112,11 @@ details:not([open]) > :not(summary) { display: none; }
         <nav class="chip-tabs" id="dictionary-tabs" role="tablist" aria-label="사전 분류"></nav>
         <div class="study-cards" id="dictionary-list"></div>
       </section>
+
+      <section class="study-panel" id="study-listen" role="tabpanel" aria-labelledby="tab-listen" data-study-panel="listen" hidden>
+        <nav class="chip-tabs" id="book-tabs" role="tablist" aria-label="난처한 클래식 권"></nav>
+        <div class="study-cards" id="book-list"></div>
+      </section>
     </section>
 
   </main>
@@ -1085,12 +1126,16 @@ details:not([open]) > :not(summary) { display: none; }
 
   <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
   <script src="study-data.js?v=4"></script>
+  <!-- listening-data.js도 고치면 ?v= 숫자를 올린다. -->
+  <script src="listening-data.js?v=1"></script>
   <script>
     (function () {
       var primaryTabs = document.querySelectorAll('.primary-tab');
       var performanceView = document.getElementById('performance-view');
       var studyView = document.getElementById('study-view');
       var studyData = window.CLASSIC_STUDY_DATA;
+      var listeningData = window.CLASSIC_LISTENING_DATA || { books: [] };
+      var LISTENED_KEY = 'classic-listened-v1';
       var studyPanels = document.querySelectorAll('.study-panel');
       var records = document.querySelectorAll('.record');
       var toast = document.getElementById('toast');
@@ -1413,6 +1458,15 @@ details:not([open]) > :not(summary) { display: none; }
           }
           if (composer.source) body.appendChild(createElement('p', 'composer-source', '출처: ' + composer.source));
           appendLinkGroup(body, '함께 보기', composer.together.split(', '), 'composer');
+          listeningData.books.forEach(function (book) {
+            if (book.composers.indexOf(composer.short) === -1) return;
+            var bookBlock = createElement('div', 'related-block');
+            bookBlock.appendChild(createElement('span', 'related-label', '난처한 클래식'));
+            var bookLinks = createElement('div', 'study-link-list');
+            bookLinks.appendChild(createStudyLink(book.number + '권 · ' + book.name + ' 수록곡 ' + book.tracks.length + '곡 듣기', 'book', book.id));
+            bookBlock.appendChild(bookLinks);
+            body.appendChild(bookBlock);
+          });
           card.appendChild(body);
           var eraComposerList = Array.prototype.slice.call(document.querySelectorAll('[data-era-composers]')).filter(function (list) {
             return list.getAttribute('data-era-composers') === composer.era;
@@ -1544,8 +1598,123 @@ details:not([open]) > :not(summary) { display: none; }
         });
       }
 
+      // 듣기: 난처한 클래식 권마다 카드 하나. 중요곡과 스피커 번호 10개씩 묶음이 ＋ 줄이 된다.
+      function readListened() {
+        try { return JSON.parse(storageGet(LISTENED_KEY)) || {}; } catch (error) { return {}; }
+      }
+
+      // 들음 표시는 권 + 스피커 번호로 묶는다. 중요곡과 수록곡이 다른 영상이어도 같은 곡으로 센다.
+      function trackKey(book, track) {
+        if (track.no !== null && track.no !== undefined) return book.id + '-' + track.no;
+        var match = String(track.url).match(/(?:[?&]v=|youtu\.be\/)([\w-]{6,})/);
+        return match ? match[1] : String(track.url);
+      }
+
+      function trackElementId(book, index) {
+        return 'track-' + book.id + '-' + (index + 1);
+      }
+
+      function updateBookProgress() {
+        var listened = readListened();
+        listeningData.books.forEach(function (book) {
+          var progress = document.querySelector('[data-book-progress="' + book.id + '"]');
+          if (!progress) return;
+          var done = book.tracks.filter(function (track) { return listened[trackKey(book, track)]; }).length;
+          progress.textContent = '';
+          progress.appendChild(createElement('strong', '', done + ' / ' + book.tracks.length + '곡'));
+          progress.appendChild(document.createTextNode(' 들음' + (book.key.length ? ' · 중요곡 ' + book.key.length + '곡' : '')));
+        });
+        document.querySelectorAll('.track').forEach(function (row) {
+          var done = !!listened[row.getAttribute('data-track-key')];
+          row.classList.toggle('is-done', done);
+          row.querySelector('.track-check').setAttribute('aria-pressed', done ? 'true' : 'false');
+        });
+      }
+
+      function createTrackRow(book, track, id) {
+        var row = createElement('div', 'track');
+        if (id) row.id = id;
+        row.tabIndex = -1;
+        row.setAttribute('data-track-key', trackKey(book, track));
+        var meta = createElement('div', 'track-meta');
+        meta.appendChild(createElement('span', '', [track.label, track.page].filter(Boolean).join(' · ')));
+        if (track.post) {
+          var post = createElement('a', 'track-post', '원글');
+          post.href = track.post;
+          post.target = '_blank';
+          post.rel = 'noopener noreferrer';
+          meta.appendChild(post);
+        }
+        row.appendChild(meta);
+        var link = createElement('a', 'track-link', track.title);
+        link.href = track.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        row.appendChild(link);
+        var check = createElement('button', 'track-check', '✓');
+        check.type = 'button';
+        check.setAttribute('aria-pressed', 'false');
+        check.setAttribute('aria-label', track.title + ' 들었음 표시');
+        check.addEventListener('click', function () {
+          var listened = readListened();
+          var key = row.getAttribute('data-track-key');
+          if (listened[key]) delete listened[key];
+          else listened[key] = new Date().toISOString().slice(0, 10);
+          if (!storageSet(LISTENED_KEY, JSON.stringify(listened))) showToast('이 브라우저에서는 저장할 수 없습니다');
+          updateBookProgress();
+        });
+        row.appendChild(check);
+        return row;
+      }
+
+      function renderListening() {
+        var bookList = document.getElementById('book-list');
+        listeningData.books.forEach(function (book) {
+          var card = createElement('section', 'fold-card');
+          card.setAttribute('data-book-card', book.id);
+          var title = book.number ? book.number + '권 · ' + book.name : book.name;
+          var head = createFoldHead(title, book.tracks.length + '곡', '');
+          var progress = createElement('p', 'book-progress');
+          progress.setAttribute('data-book-progress', book.id);
+          head.appendChild(progress);
+          var links = createElement('div', 'book-links');
+          book.playlists.forEach(function (playlist) {
+            var link = createElement('a', '', /플레이리스트|재생목록/.test(playlist.title) ? '중요곡 재생목록' : '전체 재생 링크');
+            link.href = playlist.url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            links.appendChild(link);
+          });
+          if (book.keyPosts.length) {
+            var keyPost = createElement('a', '', '중요곡 모음 원글');
+            keyPost.href = book.keyPosts[0];
+            keyPost.target = '_blank';
+            keyPost.rel = 'noopener noreferrer';
+            links.appendChild(keyPost);
+          }
+          if (links.children.length) head.appendChild(links);
+          card.appendChild(head);
+
+          if (book.key.length) {
+            var key = createFoldSection('★ 중요곡', book.key.length + '곡', 'row-list');
+            book.key.forEach(function (track) { key.body.appendChild(createTrackRow(book, track)); });
+            card.appendChild(key.section);
+          }
+          for (var start = 0; start < book.tracks.length; start += 10) {
+            var chunk = book.tracks.slice(start, start + 10);
+            var numbers = chunk.map(function (track) { return track.no; }).filter(function (no) { return no !== null; });
+            var label = numbers.length ? '스피커 ' + numbers[0] + '–' + numbers[numbers.length - 1] + '번' : '수록곡';
+            var group = createFoldSection(label, chunk.length + '곡', 'row-list');
+            chunk.forEach(function (track, offset) { group.body.appendChild(createTrackRow(book, track, trackElementId(book, start + offset))); });
+            card.appendChild(group.section);
+          }
+          bookList.appendChild(card);
+        });
+        updateBookProgress();
+      }
+
       function activateStudySection(section) {
-        activatePrimaryTab(document.getElementById(section === 'dictionary' ? 'tab-dictionary' : 'tab-eras'));
+        activatePrimaryTab(document.getElementById('tab-' + section) || document.getElementById('tab-eras'));
       }
 
       var studySearch = document.getElementById('study-search');
@@ -1656,6 +1825,16 @@ details:not([open]) > :not(summary) { display: none; }
           revealDictionaryCard(value, dictionaryCategoryForTerm(term.category));
           return;
         }
+        if (kind === 'book') {
+          activateStudySection('listen');
+          revealTarget(document.querySelector('[data-book-card="' + value + '"]'));
+          return;
+        }
+        if (kind === 'track') {
+          activateStudySection('listen');
+          revealTarget(document.getElementById(value));
+          return;
+        }
         if (kind === 'dictionary-item') {
           var itemParts = value.split('::');
           activateStudySection('dictionary');
@@ -1711,6 +1890,11 @@ details:not([open]) > :not(summary) { display: none; }
           if (section.title === '시대별 오케스트라 규모') return;
           section.items.forEach(function (item) {
             entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '연주와 편성 · ' + section.title, value: '연주와 편성::' + item[0], search: [item[0], item[1], item[2] || '', section.title].join(' ') });
+          });
+        });
+        listeningData.books.forEach(function (book) {
+          book.tracks.forEach(function (track, index) {
+            entries.push({ kind: 'track', type: '듣기', title: track.title, subtitle: (book.number ? book.number + '권 · ' : '') + track.label, value: trackElementId(book, index), search: [track.title, track.label, book.name, '난처한 클래식'].join(' ') });
           });
         });
         studyData.reading.catalogues.forEach(function (item) {
@@ -1798,6 +1982,11 @@ details:not([open]) > :not(summary) { display: none; }
       } catch (error) {
         console.error(error);
       }
+      try {
+        renderListening();
+      } catch (error) {
+        console.error(error);
+      }
 
       // 시대 · 사전은 탭으로 카드 하나씩 보여 준다. 고른 탭은 이 브라우저에 기억한다.
       function setupCardTabs(nav, list, attr, storageKey, labels) {
@@ -1849,10 +2038,15 @@ details:not([open]) > :not(summary) { display: none; }
       var selectEraCard = setupCardTabs(document.getElementById('era-tabs'), document.getElementById('era-overviews'), 'data-era-card', 'classic-era', { '낭만 후기 · 국민악파': '낭만 후기' });
       var selectDictionaryCard = setupCardTabs(document.getElementById('dictionary-tabs'), document.getElementById('dictionary-list'), 'data-dictionary-category', 'classic-dictionary', {});
 
+      var bookTabLabels = {};
+      listeningData.books.forEach(function (book) { bookTabLabels[book.id] = book.number ? book.number + '권 ' + book.name : book.name; });
+      var selectBookCard = setupCardTabs(document.getElementById('book-tabs'), document.getElementById('book-list'), 'data-book-card', 'classic-book', bookTabLabels);
+
       function showCardFor(node) {
-        var card = node.closest('[data-era-card], [data-dictionary-category]');
+        var card = node.closest('[data-era-card], [data-dictionary-category], [data-book-card]');
         if (!card) return;
         if (card.hasAttribute('data-era-card')) selectEraCard(card.getAttribute('data-era-card'));
+        else if (card.hasAttribute('data-book-card')) selectBookCard(card.getAttribute('data-book-card'));
         else selectDictionaryCard(card.getAttribute('data-dictionary-category'));
       }
 
@@ -2213,7 +2407,7 @@ details:not([open]) > :not(summary) { display: none; }
       } else {
         var savedView = initialHash || storageGet('classic-view');
         if (savedView === 'study' || savedView === 'eras') activateStudySection('eras');
-        else if (savedView === 'dictionary') activateStudySection('dictionary');
+        else if (savedView === 'dictionary' || savedView === 'listen') activateStudySection(savedView);
       }
 
       function showToast(message) {

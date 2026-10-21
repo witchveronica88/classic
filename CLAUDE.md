@@ -14,6 +14,7 @@
   - 목록 항목은 마침표 없이 '~함'이나 명사로 끝내고, 설명 문단은 '~다.'로 끝낸다
   - 사전의 굵은 한 줄 정의는 한 문장으로 쓴다. 예로 드는 곡은 '들어 볼 곡'(listen)에, 덧붙일 설명은 자세한 설명(detail)에 넣는다
 - `study-data.js`를 고치면 `index.html`의 `<script src="study-data.js?v=숫자">` 숫자를 하나 올린다. 안 올리면 휴대폰에 남은 예전 파일과 섞여 화면이 멈출 수 있다.
+- `listening-data.js`(난처한 클래식 수록 음악)는 `tools/import-nanclassic.py`로 만든다. 손으로 고치지 말고 원본 HTML로 다시 만들고, 바뀌면 `listening-data.js?v=` 숫자도 올린다.
 
 ## 디자인 규칙
 

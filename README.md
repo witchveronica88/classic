@@ -17,10 +17,16 @@
 - **클래식 사전**: 곡의 종류 · 작곡 기법 · 사조 · 연주와 편성 · 공연 관람 · 읽는 법까지 6개 분류를 탭으로 골라 카드 하나씩 봄. 하위 분류와 용어를 ＋로 펼쳐 봄
 - **통합 검색**: 시대 · 작곡가 · 대표곡 · 연표 · 사전 항목 (`/` 키로 바로 검색, ↑↓ · Enter로 이동)
 
+### 듣기 (난처한 클래식)
+- 「난처한 클래식」 1~10권의 스피커 번호별 수록 음악 729곡을 권 탭으로 골라 봄 (난톡 게시판에서 모은 유튜브 링크)
+- 권 카드마다 ★ 중요곡과 스피커 번호 10개씩 묶음을 ＋로 펼침. 곡 이름을 누르면 유튜브, '원글'을 누르면 난톡 게시글이 열림
+- 오른쪽 동그라미로 들은 곡을 표시하면 권별로 "12 / 60곡 들음"처럼 진도가 쌓임 (중요곡과 수록곡은 스피커 번호로 함께 셈)
+- 작곡가 카드의 "난처한 클래식" 링크로 해당 권으로 이동, 통합 검색으로 곡 이름 검색
+
 ### 그 밖에
 - 기기 설정을 따르는 다크 모드
-- 모바일 우선 레이아웃, 화면 아래 고정 탭 바(공연 기록 · 시대 · 작곡가 · 클래식 사전), 맨 위로 버튼
-- `#eras`, `#dictionary`, `#composer-beethoven`처럼 주소 끝에 붙여 원하는 화면으로 바로 이동
+- 모바일 우선 레이아웃, 화면 아래 고정 탭 바(공연 기록 · 시대 · 작곡가 · 클래식 사전 · 듣기), 맨 위로 버튼
+- `#eras`, `#dictionary`, `#listen`, `#composer-beethoven`처럼 주소 끝에 붙여 원하는 화면으로 바로 이동
 
 ## 파일
 
@@ -28,6 +34,8 @@
 | --- | --- |
 | `index.html` | 화면 · 스타일 · 동작, 공연 기록 내용 |
 | `study-data.js` | 시대 · 작곡가 · 연표 · 사전 데이터 (`window.CLASSIC_STUDY_DATA`) |
+| `listening-data.js` | 난처한 클래식 수록 음악 목록 (`window.CLASSIC_LISTENING_DATA`) |
+| `tools/import-nanclassic.py` | 난처한 클래식 수록 음악 HTML을 `listening-data.js`로 바꾸는 도구 |
 | `icon.svg` | 파비콘 |
 
 ### 내용 추가하기
@@ -47,8 +55,10 @@
   - `study-data.js`를 고친 뒤에는 `index.html`의 `study-data.js?v=` 숫자를 하나 올립니다.
   - 시대별 **먼저 들어 볼 곡**은 `eras[].listen`에 곡마다 `{ "text": "곡 이름", "url": "" }`로 적습니다. `url`에 영상 주소를 넣으면 그 곡이 링크가 됩니다.
 
+- **난처한 클래식 목록 갱신**: 「수록 음악 듣기」 HTML을 새로 모았다면 `python3 tools/import-nanclassic.py 파일.html listening-data.js`를 실행하고 `index.html`의 `listening-data.js?v=` 숫자를 하나 올립니다. 권과 작곡가 연결은 도구 안의 `BOOK_COMPOSERS`에서 정합니다.
+
 ## 저장 범위
-감상 노트는 `index.html`에 적혀 있어 모든 기기에서 똑같이 보입니다. 마지막으로 본 탭만 브라우저의 `localStorage`에 기억합니다.
+감상 노트는 `index.html`에 적혀 있어 모든 기기에서 똑같이 보입니다. 마지막으로 본 탭과 듣기 탭의 들은 곡 표시는 브라우저의 `localStorage`에만 기억합니다.
 
 ## 배포
 GitHub Pages: 저장소 **Settings → Pages**에서 Source를 `Deploy from a branch`, Branch를 `main` / `(root)`로 지정하면
