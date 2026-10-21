@@ -12,6 +12,7 @@
   <title>클래식</title>
   <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
 
 :root {
   color-scheme: light;
@@ -616,22 +617,7 @@ details:not([open]) > :not(summary) { display: none; }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
 .term-row[hidden] { display: none; }
 
-.note-field { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-.note-field label { display: block; margin-bottom: 8px; font-size: var(--fs-m); font-weight: 700; }
-.note-field textarea {
-  width: 100%;
-  min-height: 96px;
-  resize: vertical;
-  padding: 12px 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  outline: 0;
-  background: var(--card);
-  color: var(--text);
-}
-.note-field textarea:focus { border-color: var(--accent); }
 
-.footnote { margin: 24px 0 0; color: var(--muted); font-size: var(--fs-s); }
 .toast {
   position: fixed;
   left: 50%;
@@ -770,38 +756,10 @@ details:not([open]) > :not(summary) { display: none; }
 .stat strong small { margin-left: 2px; color: var(--muted); font-size: var(--fs-s); font-weight: 500; }
 .stat span { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-s); }
 .record-rating { display: inline-block; margin: 0 0 8px 6px; color: var(--star); font-size: var(--fs-s); letter-spacing: 1px; vertical-align: top; line-height: 24px; }
-.note-detail .detail-body { padding-top: 16px; }
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin: 0 0 12px;
-  border: 0;
-  padding: 0;
-}
-.rating legend { float: left; margin-right: 8px; font-size: var(--fs-m); font-weight: 700; }
-.rating button {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--line);
-  font-size: var(--fs-xl);
-  line-height: 1;
-}
-.rating button[aria-pressed="true"] { color: var(--star); }
-.note-field { margin-top: 0; padding-top: 0; border-top: 0; }
-.note-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; color: var(--muted); font-size: var(--fs-s); }
-.text-button {
-  min-height: 32px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--accent);
-  font-size: var(--fs-s);
-  font-weight: 700;
-}
+.note-detail .detail-body { padding-top: 12px; }
+/* 감상 노트는 손글씨체로 보여 준다. 내용은 index.html에 직접 적는다(README 참고) */
+.note-text { margin: 0; font-family: "Gaegu", cursive; font-size: var(--fs-l); line-height: 1.6; white-space: pre-line; }
+.note-text + .note-text { margin-top: 12px; }
 .calendar-add {
   display: inline-flex;
   min-height: 44px;
@@ -1086,7 +1044,6 @@ details:not([open]) > :not(summary) { display: none; }
       </div>
     </section>
 
-    <p class="footnote">프로그램 · 출연진 조사 기준일 2026.10.02. 일정과 출연진은 변경될 수 있으므로 관람 전 공식 안내 확인.</p>
     </section>
 
     <section class="view-panel" id="study-view" hidden>
@@ -1989,12 +1946,6 @@ details:not([open]) > :not(summary) { display: none; }
         return values.year + '-' + values.month + '-' + values.day;
       }
 
-      var NOTES_KEY = 'classic-notes-v1';
-
-      function readNotes() {
-        try { return JSON.parse(storageGet(NOTES_KEY)) || {}; } catch (error) { return {}; }
-      }
-
       function recordKey(record) {
         return record.getAttribute('data-date') + '|' + record.querySelector('h3').textContent.trim();
       }
@@ -2003,115 +1954,18 @@ details:not([open]) > :not(summary) { display: none; }
         return '★★★★★'.slice(0, rating) + '☆☆☆☆☆'.slice(0, 5 - rating);
       }
 
-      function formatStamp(iso) {
-        var date = new Date(iso);
-        if (isNaN(date)) return '';
-        return date.getFullYear() + '.' + String(date.getMonth() + 1).padStart(2, '0') + '.' + String(date.getDate()).padStart(2, '0') + ' 저장';
+      // 별점은 공연 article의 data-rating(1~5), 감상 노트는 공연 안의 details.note-detail에 직접 적는다
+      function recordRating(record) {
+        var rating = parseInt(record.getAttribute('data-rating'), 10);
+        return rating >= 1 && rating <= 5 ? rating : 0;
       }
 
-      function updateRecordRating(record, note) {
-        var badge = record.querySelector('.record-rating');
-        var rating = note && note.rating ? note.rating : 0;
-        if (!rating) {
-          if (badge) badge.remove();
-          return;
-        }
-        if (!badge) {
-          badge = createElement('span', 'record-rating');
-          record.querySelector('.status').insertAdjacentElement('afterend', badge);
-        }
-        badge.textContent = starText(rating);
+      function updateRecordRating(record) {
+        var rating = recordRating(record);
+        if (!rating) return;
+        var badge = createElement('span', 'record-rating', starText(rating));
         badge.setAttribute('aria-label', '별점 ' + rating + '점');
-      }
-
-      function saveNote(record, patch) {
-        var notes = readNotes();
-        var key = recordKey(record);
-        var note = notes[key] || { rating: 0, text: '' };
-        Object.keys(patch).forEach(function (field) { note[field] = patch[field]; });
-        note.updated = new Date().toISOString();
-        if (!note.rating && !note.text.trim()) delete notes[key];
-        else notes[key] = note;
-        if (!storageSet(NOTES_KEY, JSON.stringify(notes))) showToast('이 브라우저에서는 저장할 수 없습니다');
-        updateRecordRating(record, notes[key]);
-        updateStats();
-        return notes[key];
-      }
-
-      function buildNoteEditor(record) {
-        var key = recordKey(record);
-        var note = readNotes()[key] || { rating: 0, text: '' };
-        var detail = createElement('details', 'note-detail');
-        var summary = createElement('summary');
-        summary.appendChild(createElement('span', '', '감상 노트'));
-        detail.appendChild(summary);
-        var body = createElement('div', 'detail-body');
-
-        var rating = createElement('fieldset', 'rating');
-        rating.appendChild(createElement('legend', '', '별점'));
-        var stars = [];
-        function paintStars(value) {
-          stars.forEach(function (star, index) { star.setAttribute('aria-pressed', index < value ? 'true' : 'false'); });
-        }
-        for (var i = 1; i <= 5; i += 1) {
-          (function (value) {
-            var star = createElement('button', '', '★');
-            star.type = 'button';
-            star.setAttribute('aria-label', value + '점');
-            star.addEventListener('click', function () {
-              var current = (readNotes()[key] || {}).rating || 0;
-              var next = current === value ? 0 : value;
-              paintStars(next);
-              var saved = saveNote(record, { rating: next, text: textarea.value });
-              meta.firstChild.textContent = saved ? formatStamp(saved.updated) : '';
-            });
-            stars.push(star);
-            rating.appendChild(star);
-          }(i));
-        }
-        paintStars(note.rating || 0);
-        body.appendChild(rating);
-
-        var field = createElement('div', 'note-field');
-        var fieldId = 'note-' + key.replace(/[^0-9a-zA-Z가-힣]/g, '-');
-        var label = createElement('label', '', '메모');
-        label.setAttribute('for', fieldId);
-        var textarea = createElement('textarea');
-        textarea.id = fieldId;
-        textarea.placeholder = '가장 기억에 남는 순간, 앙코르 곡, 다음에 들어 볼 곡…';
-        textarea.value = note.text || '';
-        field.appendChild(label);
-        field.appendChild(textarea);
-        var meta = createElement('div', 'note-meta');
-        meta.appendChild(createElement('span', '', note.updated ? formatStamp(note.updated) : '이 브라우저에만 저장'));
-        var clear = createElement('button', 'text-button', '지우기');
-        clear.type = 'button';
-        clear.addEventListener('click', function () {
-          if (!textarea.value && !(readNotes()[key] || {}).rating) return;
-          if (!window.confirm('이 공연의 감상 노트를 지울까요?')) return;
-          textarea.value = '';
-          paintStars(0);
-          saveNote(record, { rating: 0, text: '' });
-          meta.firstChild.textContent = '이 브라우저에만 저장';
-          showToast('감상 노트를 지웠습니다');
-        });
-        meta.appendChild(clear);
-        field.appendChild(meta);
-        body.appendChild(field);
-
-        var saveTimer;
-        textarea.addEventListener('input', function () {
-          clearTimeout(saveTimer);
-          saveTimer = setTimeout(function () {
-            var saved = saveNote(record, { text: textarea.value });
-            meta.firstChild.textContent = saved ? formatStamp(saved.updated) : '이 브라우저에만 저장';
-          }, 400);
-        });
-
-        detail.appendChild(body);
-        var infoDetail = record.querySelector('.booking').closest('details');
-        infoDetail.parentNode.insertBefore(detail, infoDetail);
-        updateRecordRating(record, readNotes()[key]);
+        record.querySelector('.status').insertAdjacentElement('afterend', badge);
       }
 
       function icsDate(date) {
@@ -2159,7 +2013,7 @@ details:not([open]) > :not(summary) { display: none; }
       }
 
       records.forEach(function (record) {
-        buildNoteEditor(record);
+        updateRecordRating(record);
         record.calendarButton = buildCalendarButton(record);
       });
 
@@ -2206,10 +2060,8 @@ details:not([open]) > :not(summary) { display: none; }
             }
           });
         });
-        var notes = readNotes();
-        var noted = seen.filter(function (record) { return notes[recordKey(record)]; }).map(function (record) {
-          var note = notes[recordKey(record)];
-          return { record: record, rating: note.rating || 0, text: note.text || '' };
+        var noted = seen.filter(function (record) { return record.querySelector('.note-detail'); }).map(function (record) {
+          return { record: record, rating: recordRating(record) };
         });
         return { pieces: pieces, performers: order.map(function (name) { return performers[name]; }), notes: noted };
       }
@@ -2257,12 +2109,12 @@ details:not([open]) > :not(summary) { display: none; }
           });
         } else {
           data.notes.forEach(function (note) {
-            var sub = (note.rating ? starText(note.rating) : '') + (note.text.trim() ? (note.rating ? ' · ' : '') + '메모 있음' : '');
+            var sub = note.rating ? starText(note.rating) : '';
             appendStatRow(list, note.record.querySelector('h3').textContent.trim(), sub, shortDate(note.record), note.record.querySelector('.note-detail'));
           });
         }
         if (!list.children.length) {
-          list.appendChild(createElement('p', 'stat-empty', openStat === 'notes' ? '아직 남긴 감상 노트가 없습니다. 관람한 공연의 「감상 노트」를 펼쳐 남겨 보세요.' : '아직 관람한 공연이 없습니다.'));
+          list.appendChild(createElement('p', 'stat-empty', openStat === 'notes' ? '아직 감상 노트가 없습니다.' : '아직 관람한 공연이 없습니다.'));
         }
       }
 
@@ -2292,7 +2144,6 @@ details:not([open]) > :not(summary) { display: none; }
             statusLabel = days === 0 ? '오늘' : 'D-' + days;
           }
           record.querySelector('.status').textContent = statusLabel;
-          record.querySelector('.note-detail').hidden = status !== 'seen';
           if (record.calendarButton) record.calendarButton.hidden = status !== 'upcoming';
         });
         updateStats();
