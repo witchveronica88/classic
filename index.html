@@ -725,16 +725,46 @@ details:not([open]) > :not(summary) { display: none; }
 .info-list { color: var(--text); }
 
 /* Stats, notes, calendar */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.stats-card {
   margin: 0 0 16px;
-  overflow: hidden;
+  overflow: clip;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
 }
-.stat { padding: 14px 16px; border-left: 1px solid var(--line); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* 요약 칸을 누르면 같은 카드 안에 목록이 펼쳐진다. 고른 칸은 아래 컬러바로 표시한다. */
+.stat {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+.stat[aria-expanded="true"] { box-shadow: inset 0 -3px 0 var(--accent); }
+.stat[aria-expanded="true"] span { color: var(--accent); font-weight: 700; }
+.stat-list { border-top: 1px solid var(--line); }
+.stat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px var(--pad);
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+.stat-row:first-child { border-top: 0; }
+.stat-row strong { min-width: 0; font-size: var(--fs-m); font-weight: 700; line-height: 1.4; }
+.stat-row .stat-sub { grid-column: 1; color: var(--muted); font-size: var(--fs-s); line-height: 1.5; }
+.stat-row .stat-date { grid-column: 2; grid-row: 1; align-self: center; color: var(--muted); font-size: var(--fs-s); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat-row:hover strong { color: var(--accent); }
+.stat-empty { margin: 0; padding: 16px var(--pad); color: var(--muted); }
 .stat:first-child { border-left: 0; }
 .stat strong { display: block; font-size: var(--fs-xl); font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
 .stat strong small { margin-left: 2px; color: var(--muted); font-size: var(--fs-s); font-weight: 500; }
@@ -840,7 +870,10 @@ details:not([open]) > :not(summary) { display: none; }
     </nav>
 
     <section class="view-panel" id="performance-view" role="tabpanel" aria-labelledby="tab-performances">
-    <div class="stats" id="stats" aria-label="관람 요약"></div>
+    <section class="stats-card" aria-label="관람 요약">
+      <div class="stats" id="stats"></div>
+      <div class="stat-list" id="stat-list" hidden></div>
+    </section>
 
     <section class="record-group" id="upcoming-group" aria-labelledby="upcoming-heading">
       <div class="group-head"><h2 id="upcoming-heading">다가오는 공연</h2><span id="upcoming-count"></span></div>
@@ -2135,32 +2168,117 @@ details:not([open]) > :not(summary) { display: none; }
         record.calendarButton = buildCalendarButton(record);
       });
 
-      function appendStat(parent, value, unit, label) {
-        var stat = createElement('div', 'stat');
+      // 관람 요약: 관람한 공연에서 들은 작품 · 만난 연주자 · 감상 노트를 모은다.
+      var openStat = '';
+
+      function shortDate(record) {
+        var parts = record.getAttribute('data-date').split('-');
+        var weekday = (record.querySelector('.weekday') || {}).textContent || '';
+        return Number(parts[1]) + '.' + Number(parts[2]) + (weekday ? '.' + weekday.trim().charAt(0) : '');
+      }
+
+      function collectSeen() {
+        var seen = Array.prototype.filter.call(records, function (record) { return record.getAttribute('data-status') === 'seen'; });
+        seen.sort(function (a, b) { return b.getAttribute('data-date').localeCompare(a.getAttribute('data-date')); });
+        var pieces = [];
+        var performers = {};
+        var order = [];
+        function meet(name, role, record, target, work) {
+          if (!performers[name]) {
+            performers[name] = { name: name, roles: [], records: [], works: [], target: target, record: record };
+            order.push(name);
+          }
+          var person = performers[name];
+          if (person.roles.indexOf(role) === -1) person.roles.push(role);
+          if (person.records.indexOf(record) === -1) person.records.push(record);
+          if (work && person.works.indexOf(work) === -1) person.works.push(work);
+        }
+        seen.forEach(function (record) {
+          var composerLink = record.querySelector('.composer-link');
+          var composer = composerLink ? composerLink.getAttribute('data-composer') : '';
+          record.querySelectorAll('.performer-detail').forEach(function (detail) {
+            meet(detail.querySelector('.performer-name').textContent.trim(), detail.querySelector('.role-label').textContent.trim(), record, detail, '');
+          });
+          record.querySelectorAll('.piece-main').forEach(function (piece) {
+            var title = piece.querySelector('.piece-title').textContent.trim();
+            var credit = (piece.querySelector('.piece-credit') || {}).textContent || '';
+            pieces.push({ title: title, sub: [composer, credit.trim().replace(' · ', ' ')].filter(Boolean).join(' · '), record: record, target: piece });
+            var creditParts = credit.split(' · ');
+            if (creditParts.length > 1) {
+              creditParts.slice(1).join(' · ').split(/,\s*/).forEach(function (name) {
+                if (name.trim()) meet(name.trim(), creditParts[0].trim(), record, piece, title);
+              });
+            }
+          });
+        });
+        var notes = readNotes();
+        var noted = seen.filter(function (record) { return notes[recordKey(record)]; }).map(function (record) {
+          var note = notes[recordKey(record)];
+          return { record: record, rating: note.rating || 0, text: note.text || '' };
+        });
+        return { pieces: pieces, performers: order.map(function (name) { return performers[name]; }), notes: noted };
+      }
+
+      function appendStat(parent, key, value, unit, label) {
+        var stat = createElement('button', 'stat');
+        stat.type = 'button';
+        stat.setAttribute('data-stat', key);
+        stat.setAttribute('aria-controls', 'stat-list');
+        stat.setAttribute('aria-expanded', openStat === key ? 'true' : 'false');
         var number = createElement('strong', '', String(value));
         number.appendChild(createElement('small', '', unit));
         stat.appendChild(number);
         stat.appendChild(createElement('span', '', label));
+        stat.addEventListener('click', function () {
+          openStat = openStat === key ? '' : key;
+          updateStats();
+          var again = document.querySelector('.stat[data-stat="' + key + '"]');
+          if (again) again.focus();
+        });
         parent.appendChild(stat);
+      }
+
+      function appendStatRow(list, title, sub, date, target) {
+        var row = createElement('button', 'stat-row');
+        row.type = 'button';
+        row.appendChild(createElement('strong', '', title));
+        if (date) row.appendChild(createElement('span', 'stat-date', date));
+        if (sub) row.appendChild(createElement('span', 'stat-sub', sub));
+        row.addEventListener('click', function () { revealTarget(target); });
+        list.appendChild(row);
+      }
+
+      function renderStatList(data) {
+        var list = document.getElementById('stat-list');
+        list.textContent = '';
+        list.hidden = !openStat;
+        if (!openStat) return;
+        if (openStat === 'pieces') {
+          data.pieces.forEach(function (piece) { appendStatRow(list, piece.title, piece.sub, shortDate(piece.record), piece.target); });
+        } else if (openStat === 'performers') {
+          data.performers.forEach(function (person) {
+            var sub = person.roles.join(' · ') + (person.works.length ? ' · ' + person.works.join(', ') : person.records.length > 1 ? ' · ' + person.records.length + '회 공연' : '');
+            appendStatRow(list, person.name, sub, shortDate(person.record), person.target);
+          });
+        } else {
+          data.notes.forEach(function (note) {
+            var sub = (note.rating ? starText(note.rating) : '') + (note.text.trim() ? (note.rating ? ' · ' : '') + '메모 있음' : '');
+            appendStatRow(list, note.record.querySelector('h3').textContent.trim(), sub, shortDate(note.record), note.record.querySelector('.note-detail'));
+          });
+        }
+        if (!list.children.length) {
+          list.appendChild(createElement('p', 'stat-empty', openStat === 'notes' ? '아직 남긴 감상 노트가 없습니다. 관람한 공연의 「감상 노트」를 펼쳐 남겨 보세요.' : '아직 관람한 공연이 없습니다.'));
+        }
       }
 
       function updateStats() {
         var stats = document.getElementById('stats');
-        var seen = Array.prototype.filter.call(records, function (record) { return record.getAttribute('data-status') === 'seen'; });
-        var pieces = seen.reduce(function (sum, record) { return sum + record.querySelectorAll('.piece').length; }, 0);
-        var performers = {};
-        seen.forEach(function (record) {
-          record.querySelectorAll('.performer-name').forEach(function (node) { performers[node.textContent.trim()] = true; });
-          record.querySelectorAll('.piece-credit').forEach(function (node) {
-            node.textContent.split(' · ').slice(1).join(' · ').split(/,\s*/).forEach(function (name) { if (name.trim()) performers[name.trim()] = true; });
-          });
-        });
-        var notes = readNotes();
-        var noteCount = Array.prototype.filter.call(records, function (record) { return notes[recordKey(record)]; }).length;
+        var data = collectSeen();
         stats.textContent = '';
-        appendStat(stats, pieces, '곡', '들은 작품');
-        appendStat(stats, Object.keys(performers).length, '명', '만난 연주자');
-        appendStat(stats, noteCount, '개', '감상 노트');
+        appendStat(stats, 'pieces', data.pieces.length, '곡', '들은 작품');
+        appendStat(stats, 'performers', data.performers.length, '명', '만난 연주자');
+        appendStat(stats, 'notes', data.notes.length, '개', '감상 노트');
+        renderStatList(data);
       }
 
       function updateRecordStatuses() {
