@@ -12,7 +12,7 @@
   <title>클래식</title>
   <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
-@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
+@import url('https://hangeul.pstatic.net/hangeul_static/css/nanum-barun-pen.css');
 
 :root {
   color-scheme: light;
@@ -331,7 +331,6 @@ details:not([open]) > :not(summary) { display: none; }
   font-size: var(--fs-s);
   font-weight: 700;
 }
-.caveat { margin: 16px 0 0; color: var(--muted); font-size: var(--fs-s); }
 .prep-list { display: grid; gap: 0; }
 .prep-link {
   display: grid;
@@ -507,20 +506,16 @@ details:not([open]) > :not(summary) { display: none; }
 .work-note { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-s); }
 .work-row.work-highlight .work-title { color: var(--accent); }
 .life-list li { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; align-items: baseline; }
-.life-year { color: var(--accent); font-size: var(--fs-s); font-weight: 700; font-variant-numeric: tabular-nums; }
+.life-year { color: var(--muted); font-size: var(--fs-s); font-weight: 700; font-variant-numeric: tabular-nums; }
 .related-block {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
   margin-top: 24px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.related-label { color: var(--muted); font-size: var(--fs-s); font-weight: 400; line-height: 1.6; }
+.related-label { margin-right: 12px; color: var(--muted); font-size: var(--fs-s); font-weight: 400; line-height: 1.6; }
 .study-link-list { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0; font-size: var(--fs-s); font-weight: 400; line-height: 1.6; }
 /* Inline link lists: the separator stays at the end of a line when the list wraps */
-.related-block .study-link-list { display: block; min-width: 0; }
+.related-block .study-link-list { display: inline; }
 .related-block .study-link:not(:last-child)::after,
 .dot-list > :not(:last-child)::after { content: "\00a0·"; color: var(--muted); font-weight: 400; }
 .study-link,
@@ -556,9 +551,6 @@ details:not([open]) > :not(summary) { display: none; }
 }
 .source-link::after { content: " ↗"; }
 .reference-sources { margin-top: 16px; }
-.concerto-flow { display: grid; gap: 8px; }
-.concerto-flow div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; color: var(--muted); }
-.concerto-flow strong { color: var(--text); }
 
 .timeline-list { display: grid; padding: 4px 0 0; }
 .term-list { display: grid; }
@@ -613,7 +605,7 @@ details:not([open]) > :not(summary) { display: none; }
 .term-listen p { margin: 0; }
 .fold-text { margin: 12px 0 0; }
 .fold-text:first-child,
-.fold-intro:first-child { margin-top: 0; }
+.fold-intro:first-child { margin-top: 12px; }
 .term-body .related-block { margin-top: 12px; padding-top: 8px; }
 .term-row[hidden] { display: none; }
 
@@ -732,12 +724,13 @@ details:not([open]) > :not(summary) { display: none; }
 .stat[aria-expanded="true"] { box-shadow: inset 0 -3px 0 var(--accent); }
 .stat[aria-expanded="true"] span { color: var(--accent); font-weight: 700; }
 .stat-list { border-top: 1px solid var(--line); }
+/* 관람 요약 목록은 항목마다 한 줄: 제목 · 보조 글은 넘치면 말줄임, 날짜는 오른쪽 끝 */
 .stat-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   width: 100%;
-  min-height: 52px;
+  min-height: 44px;
   padding: 12px var(--pad);
   border: 0;
   border-top: 1px solid var(--line);
@@ -746,9 +739,12 @@ details:not([open]) > :not(summary) { display: none; }
   text-align: left;
 }
 .stat-row:first-child { border-top: 0; }
-.stat-row strong { min-width: 0; font-size: var(--fs-m); font-weight: 700; line-height: 1.4; }
-.stat-row .stat-sub { grid-column: 1; color: var(--muted); font-size: var(--fs-s); line-height: 1.5; }
-.stat-row .stat-date { grid-column: 2; grid-row: 1; align-self: center; color: var(--muted); font-size: var(--fs-s); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat-row strong,
+.stat-row .stat-sub { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat-row strong { flex: 0 1 auto; font-size: var(--fs-m); font-weight: 700; line-height: 1.4; }
+.stat-row .stat-sub { flex: 1 1 0; color: var(--muted); font-size: var(--fs-s); }
+.stat-row .stat-sub.stat-stars { flex: none; overflow: visible; color: var(--star); letter-spacing: 1px; }
+.stat-row .stat-date { flex: none; margin-left: auto; color: var(--muted); font-size: var(--fs-s); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .stat-row:hover strong { color: var(--accent); }
 .stat-empty { margin: 0; padding: 16px var(--pad); color: var(--muted); }
 .stat:first-child { border-left: 0; }
@@ -758,8 +754,11 @@ details:not([open]) > :not(summary) { display: none; }
 .record-rating { display: inline-block; margin: 0 0 8px 6px; color: var(--star); font-size: var(--fs-s); letter-spacing: 1px; vertical-align: top; line-height: 24px; }
 .note-detail .detail-body { padding-top: 12px; }
 /* 감상 노트는 손글씨체로 보여 준다. 내용은 index.html에 직접 적는다(README 참고) */
-.note-text { margin: 0; font-family: "Gaegu", cursive; font-size: var(--fs-l); line-height: 1.6; white-space: pre-line; }
+.note-text { margin: 0; font-family: "NanumBarunpen", "Pretendard", sans-serif; font-size: var(--fs-l); line-height: 1.6; white-space: pre-line; }
 .note-text + .note-text { margin-top: 12px; }
+/* 감상 노트 맨 위의 별점 줄: 손글씨 본문과 따로 보이게 일반 글씨로 */
+.note-rating { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; color: var(--muted); font-size: var(--fs-s); }
+.note-stars { color: var(--star); letter-spacing: 1px; }
 .calendar-add {
   display: inline-flex;
   min-height: 44px;
@@ -876,7 +875,7 @@ details:not([open]) > :not(summary) { display: none; }
             <div class="piece-list">
               <div class="piece">
                 <details class="piece-main">
-                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 제1번 C장조, Op. 15</span><span class="piece-credit">피아노 · 김규연</span></span></summary>
+                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 1번 C장조 (Op. 15)</span><span class="piece-credit">피아노 · 김규연</span></span></summary>
                   <div class="piece-body">
                     <div class="piece-copy"><p>초기 베토벤이 하이든과 모차르트의 고전적 협주곡 틀 안에서 자기 목소리를 넓혀 가는 작품.</p><p>1악장은 오케스트라가 주제를 충분히 제시한 뒤 피아노가 넓은 음역과 선명한 강약 대비로 흐름을 확장한다. 웅장함만 밀어붙이기보다 피아노와 관현악이 질문하고 답하는 순간, 예상보다 멀리 이동하는 화성에 귀를 기울이면 베토벤다운 대담함이 잘 들린다.</p><p>2악장 라르고는 관악기와 피아노가 차분하게 대화하며 긴 호흡의 서정을 만든다.</p><p>마지막 론도는 가볍게 튀는 주제와 엇박, 갑작스러운 멈춤을 반복한다. 단정한 형식 속에서 불쑥 드러나는 유머와 추진력이 핵심이다.</p></div>
                     <section class="soloist-info"><h4>피아노 · 김규연</h4><p>1985년생. 지나 바카우어 영 아티스트 국제콩쿠르 우승, 2006 더블린 국제콩쿠르 준우승, 제네바 국제콩쿠르 최연소 특별상과 퀸 엘리자베스 · 클리블랜드 콩쿠르 입상 경력을 지녔다. 필라델피아 · 클리블랜드 오케스트라, 벨기에 국립교향악단 등과 협연했으며 현재 서울대 음대 교수로 재직 중이다.</p></section>
@@ -885,7 +884,7 @@ details:not([open]) > :not(summary) { display: none; }
               </div>
               <div class="piece">
                 <details class="piece-main">
-                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 제2번 B♭장조, Op. 19</span><span class="piece-credit">피아노 · 유성호</span></span></summary>
+                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 2번 B♭장조 (Op. 19)</span><span class="piece-credit">피아노 · 유성호</span></span></summary>
                   <div class="piece-body">
                     <div class="piece-copy"><p>번호는 2번이지만 1번보다 먼저 쓰기 시작했고, 여러 차례 고쳐 쓴 뒤 늦게 출판된 작품. 오케스트라의 밝고 단정한 제시부에는 모차르트와 하이든의 영향이 남아 있지만, 피아노가 들어오면 리듬을 비틀고 악구의 방향을 바꾸며 젊은 베토벤의 개성이 드러난다.</p><p>1악장에서는 가볍고 우아한 주제와 갑작스러운 힘의 분출이 교차한다.</p><p>2악장 아다지오는 피아노의 노래하는 선율을 관현악이 부드럽게 받쳐 주며, 화려함보다 음색과 호흡에 집중한다.</p><p>3악장 론도는 첫 주제부터 강박을 일부러 어긋나게 들리게 해 장난스러운 긴장을 만든다. 익숙한 고전주의 어법 안에서 박자와 악센트로 웃음을 만드는 방식이 들을 지점이다.</p></div>
                     <section class="soloist-info"><h4>피아노 · 유성호</h4><p>1996년생. 2024 서울국제음악콩쿠르 공동 우승자이자 제73회 제네바 국제음악콩쿠르 특별상 수상자. 한국예술종합학교 예술사 · 전문사를 전체 수석으로 마치고 뉴잉글랜드 음악원에서 당 타이 손을 사사했으며, 하노버 국립음대 최고연주자과정에서 아리에 바르디에게 배웠다. KBS교향악단 · 노바야 러시아 국립교향악단 등과 협연했다.</p></section>
@@ -894,7 +893,7 @@ details:not([open]) > :not(summary) { display: none; }
               </div>
               <div class="piece">
                 <details class="piece-main">
-                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 제4번 G장조, Op. 58</span><span class="piece-credit">피아노 · 김세현</span></span></summary>
+                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 4번 G장조 (Op. 58)</span><span class="piece-credit">피아노 · 김세현</span></span></summary>
                   <div class="piece-body">
                     <div class="piece-copy"><p>오케스트라의 긴 서주 없이 피아노가 혼자 짧고 조용한 화음으로 말을 건네는 파격적인 시작이 첫 인상을 결정한다. 관현악은 그 문장을 다른 조성에서 받아 확장하고, 피아노는 지배적인 독주자라기보다 전체 흐름을 이끄는 대화 상대가 된다.</p><p>1악장에서는 같은 주제가 피아노와 오케스트라 사이를 오가며 색채와 성격을 바꾸는 과정을 따라가면 좋다.</p><p>2악장 안단테 콘 모토는 단호하게 끊어 말하는 현악기와 낮고 부드럽게 응답하는 피아노가 극명하게 대비된다.</p><p>이 대화가 점차 잦아든 뒤 쉼 없이 마지막 론도로 이어지고, 억눌렸던 에너지가 밝고 유연하게 풀린다. 규모보다 침묵, 음색, 서로의 말을 듣는 방식이 중요한 협주곡이다.</p></div>
                     <section class="soloist-info"><h4>피아노 · 김세현</h4><p>2007년생. 2025 롱티보 국제 피아노콩쿠르에서 1위와 청중상 등을 받은 차세대 피아니스트. 2023 클리블랜드 국제 청소년 피아노콩쿠르에서도 우승했으며, 하버드대 영문학과 뉴잉글랜드 음악원 석사 복수학위 과정을 밟으며 당 타이 손 · 백혜선을 사사하고 있다.</p></section>
@@ -924,7 +923,6 @@ details:not([open]) > :not(summary) { display: none; }
                   <li>경기아트센터 대극장 객석에서 작품 해설 진행</li>
                   <li>객석 입장 시간에 자유롭게 관람 · 해당 공연 예매자만 참여 가능</li>
                 </ul></section>
-            <p class="caveat">곡 순서와 인터미션 배치는 확인되지 않음. 작품 번호 · 조성과 출연진은 보도 및 표준 작품 목록 기준이며, 공식 공연 안내 본문에는 명단이 없음.</p>
           </div>
         </details>
 
@@ -932,15 +930,15 @@ details:not([open]) > :not(summary) { display: none; }
           <summary><span>예습 자료</span></summary>
           <div class="detail-body prep-list">
             <a class="prep-link" href="https://www.youtube.com/watch?v=mrSBJ7xkavw" target="_blank" rel="noopener noreferrer">
-              <strong>피아노 협주곡 제1번 · 전곡</strong>
+              <strong>피아노 협주곡 1번 · 전곡</strong>
               <span>레너드 번스타인 피아노 · 지휘 · 뉴욕 필하모닉 · 베를린 실황 1960년</span>
             </a>
             <a class="prep-link" href="https://www.youtube.com/watch?v=nEM9v0piBYs" target="_blank" rel="noopener noreferrer">
-              <strong>피아노 협주곡 제2번 · 전곡</strong>
+              <strong>피아노 협주곡 2번 · 전곡</strong>
               <span>크리스티안 지메르만 피아노 · 지휘 · 빈 필하모닉 · 빈 무지크페라인 1991년</span>
             </a>
             <a class="prep-link" href="https://www.youtube.com/watch?v=6lvBQJjxw4c" target="_blank" rel="noopener noreferrer">
-              <strong>피아노 협주곡 제4번 · 전곡</strong>
+              <strong>피아노 협주곡 4번 · 전곡</strong>
               <span>미쓰코 우치다 피아노 · 마리스 얀손스 지휘 · 바이에른 방송교향악단 · BBC 프롬스 2013년</span>
             </a>
           </div>
@@ -983,7 +981,7 @@ details:not([open]) > :not(summary) { display: none; }
             <div class="piece-list">
               <div class="piece">
                 <details class="piece-main">
-                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 제3번 C단조, Op. 37</span><span class="piece-credit">피아노 · 김다솔</span></span></summary>
+                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 3번 C단조 (Op. 37)</span><span class="piece-credit">피아노 · 김다솔</span></span></summary>
                   <div class="piece-body">
                     <div class="piece-copy"><p>베토벤의 다섯 피아노 협주곡 가운데 유일한 단조 작품으로, C단조 특유의 긴장과 극적인 대비가 중심을 이룬다.</p><p>1악장은 오케스트라가 낮은 음역에서 주제를 오래 다져 놓은 뒤 피아노가 힘 있게 등장하며 갈등을 확대한다. 독주부의 날카로운 상승과 관현악의 단호한 응답, 팀파니가 끼어드는 카덴차 끝부분을 주의 깊게 들으면 긴장이 어떻게 조직되는지 선명하다.</p><p>2악장 라르고는 뜻밖의 E장조로 이동해 시간이 멈춘 듯한 고요를 만들고, 피아노의 넓게 펼친 화음과 관악기의 독주가 서로 다른 빛을 더한다.</p><p>마지막 론도는 짧고 불안한 주제를 집요하게 되돌리다가 끝부분에서 C장조로 방향을 돌린다. 어둠을 지우기보다 그 긴장을 품은 채 밝은 결말로 밀고 나가는 과정이 핵심이다.</p></div>
                     <section class="soloist-info"><h4>피아노 · 김다솔</h4><p>1989년생. 나고야 · 윤이상 · YCA 국제 오디션 · 에피날 · 키싱엔 클라비어올림프 등에서 우승하고 퀸 엘리자베스 · ARD · 제네바 콩쿠르에 입상했다. 뉴욕 필하모닉 · 바이에른 방송교향악단 · 스위스 로망드 오케스트라와 협연했으며, 2016–2022년 베토벤 피아노 소나타 전곡 프로젝트를 완주했다. 현재 서울대 음대 교수다.</p></section>
@@ -992,7 +990,7 @@ details:not([open]) > :not(summary) { display: none; }
               </div>
               <div class="piece">
                 <details class="piece-main">
-                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 제5번 E♭장조, Op. 73 「황제」</span><span class="piece-credit">피아노 · 올리버 케른</span></span></summary>
+                  <summary><span class="piece-summary-copy"><span class="piece-title">피아노 협주곡 5번 E♭장조 「황제」 (Op. 73)</span><span class="piece-credit">피아노 · 올리버 케른</span></span></summary>
                   <div class="piece-body">
                     <div class="piece-copy"><p>첫 마디부터 관현악의 웅장한 화음 사이로 피아노의 카덴차풍 악구가 솟아오르며, 전통적인 “오케스트라 제시 뒤 독주 등장”의 순서를 뒤집는다.</p><p>1악장은 군대풍 리듬과 넓은 음역, 빛나는 음형을 사용하지만 피아노와 오케스트라는 단순히 경쟁하기보다 하나의 거대한 구조를 함께 세운다. 베토벤은 카덴차를 연주자의 즉흥에 맡기지 않고 악보에 직접 적어 작품의 흐름 안에 고정했다.</p><p>2악장 아다지오는 B장조의 따뜻하고 정적인 선율로 분위기를 완전히 바꾸며, 피아노가 장식하듯 노래한다.</p><p>끝에서 피아노가 조심스럽게 마지막 악장의 주제를 예고하면 곧바로 힘찬 론도가 시작되고, 탄력 있는 리듬이 끝까지 추진력을 유지한다. 「황제」라는 별칭은 널리 쓰이지만 베토벤 자신이 붙인 이름은 아니다.</p></div>
                     <section class="soloist-info"><h4>피아노 · 올리버 케른</h4><p>1970년생. 독일 슈투트가르트 국립음대에서 피아노 · 관현악 지휘 · 합창 지휘를 공부하고 루돌프 부흐빈더와 카를하인츠 케멀링에게 사사했다. 1999 ARD 국제음악콩쿠르 수상, 2001 빈 베토벤 국제콩쿠르 우승과 베토벤 소나타 특별상을 받았으며 베토벤 · 브람스 해석으로 알려져 있다. 프랑크푸르트 음악대학 피아노 교수로 후학을 가르친다.</p></section>
@@ -1030,7 +1028,6 @@ details:not([open]) > :not(summary) { display: none; }
                   <li>경기아트센터 대극장 객석에서 작품 해설 진행</li>
                   <li>객석 입장 시간에 자유롭게 관람 · 해당 공연 예매자만 참여 가능</li>
                 </ul></section>
-            <p class="caveat">곡 순서와 인터미션 배치는 확인되지 않음. 작품 번호 · 조성과 출연진은 보도 및 표준 작품 목록 기준이며, 공식 공연 안내 본문에는 명단이 없음.</p>
           </div>
         </details>
 
@@ -1038,11 +1035,11 @@ details:not([open]) > :not(summary) { display: none; }
           <summary><span>예습 자료</span></summary>
           <div class="detail-body prep-list">
             <a class="prep-link" href="https://www.youtube.com/watch?v=dtNGTVuMw1g" target="_blank" rel="noopener noreferrer">
-              <strong>피아노 협주곡 제3번 · 전곡</strong>
+              <strong>피아노 협주곡 3번 · 전곡</strong>
               <span>마르타 아르헤리치 피아노 · 클라우디오 아바도 지휘 · 말러 체임버 오케스트라 · 페라라 실황 2004년</span>
             </a>
             <a class="prep-link" href="https://www.youtube.com/watch?v=R013xOzk2tw" target="_blank" rel="noopener noreferrer">
-              <strong>피아노 협주곡 제5번 「황제」 · 전곡</strong>
+              <strong>피아노 협주곡 5번 「황제」 · 전곡</strong>
               <span>크리스티안 지메르만 피아노 · 레너드 번스타인 지휘 · 빈 필하모닉 · 빈 무지크페라인 1989년</span>
             </a>
           </div>
@@ -1078,7 +1075,7 @@ details:not([open]) > :not(summary) { display: none; }
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- study-data.js를 고치면 ?v= 숫자를 올린다. 휴대폰에 남은 예전 파일 대신 새 파일을 받게 한다. -->
-  <script src="study-data.js?v=3"></script>
+  <script src="study-data.js?v=4"></script>
   <script>
     (function () {
       var primaryTabs = document.querySelectorAll('.primary-tab');
@@ -1135,7 +1132,7 @@ details:not([open]) > :not(summary) { display: none; }
         var isComposer = kind === 'composer';
         if (isComposer) {
           var linkedComposer = studyData.composers.filter(function (item) { return item.short === value; })[0];
-          if (linkedComposer) label = linkedComposer.full.split(' (')[0];
+          if (linkedComposer) label = linkedComposer.full.split('(')[0];
         }
         var link = createElement(isComposer ? 'a' : 'button', 'study-link');
         if (isComposer) link.href = '#' + composerTargetId(value);
@@ -1357,7 +1354,7 @@ details:not([open]) > :not(summary) { display: none; }
           card.setAttribute('data-composer-card', composer.short);
           var summary = createElement('summary');
           var row = createElement('span', 'composer-summary');
-          var fullKoreanName = composer.full.split(' (')[0];
+          var fullKoreanName = composer.full.split('(')[0];
           var lifespanMatch = composer.full.match(/(?:\d{4}(?:경)?–(?:\d{4}|),?)/);
           var nameBlock = createElement('span', 'composer-main');
           var nameLine = createElement('span', 'composer-name-line');
@@ -1387,15 +1384,12 @@ details:not([open]) > :not(summary) { display: none; }
             lifeList.appendChild(item);
           });
           body.appendChild(lifeList);
-          appendLinkGroup(body, '함께 보기', composer.together.split(', '), 'composer');
-          if (composer.source) body.appendChild(createElement('p', 'composer-source', '출처: ' + composer.source));
-
           if (composer.short === '베토벤') {
-            body.appendChild(createElement('h4', '', '피아노 협주곡의 흐름'));
-            var flow = createElement('div', 'concerto-flow');
-            [['1 · 2번','고전적 틀 안에서 피아니스트 베토벤의 재치와 추진력이 드러나는 초기 작품.'],['3번','유일한 단조 협주곡. 독주와 관현악의 극적 긴장이 전면에 나온다.'],['4번','피아노 독주로 조용히 시작해 대화와 음색의 변화를 중심에 둔다.'],['5번','첫머리부터 카덴차풍 독주가 등장하며 협주곡의 규모와 교향성을 확장한다.']].forEach(function (item) {
-              var line = createElement('div');
-              line.appendChild(createElement('strong', '', item[0]));
+            body.appendChild(createElement('h4', 'section-label', '피아노 협주곡의 흐름'));
+            var flow = createElement('ul', 'life-list concerto-flow');
+            [['1 · 2번','고전적 틀 안에서 피아니스트 베토벤의 재치와 추진력이 드러나는 초기 작품'],['3번','유일한 단조 협주곡으로, 독주와 관현악의 극적 긴장이 전면에 나옴'],['4번','피아노 독주로 조용히 시작해 대화와 음색의 변화를 중심에 둠'],['5번','첫머리부터 카덴차풍 독주가 등장하며 협주곡의 규모와 교향성을 넓힘']].forEach(function (item) {
+              var line = createElement('li');
+              line.appendChild(createElement('span', 'life-year', item[0]));
               line.appendChild(createElement('span', '', item[1]));
               flow.appendChild(line);
             });
@@ -1408,6 +1402,8 @@ details:not([open]) > :not(summary) { display: none; }
             sources.appendChild(source);
             body.appendChild(sources);
           }
+          if (composer.source) body.appendChild(createElement('p', 'composer-source', '출처: ' + composer.source));
+          appendLinkGroup(body, '함께 보기', composer.together.split(', '), 'composer');
           card.appendChild(body);
           var eraComposerList = Array.prototype.slice.call(document.querySelectorAll('[data-era-composers]')).filter(function (list) {
             return list.getAttribute('data-era-composers') === composer.era;
@@ -1499,12 +1495,12 @@ details:not([open]) > :not(summary) { display: none; }
               intro: section.intro || (index === 0 ? studyData.instruments.intro : '')
             };
           })) },
-          { name: '공연 관람', text: '공연장에서 자주 듣는 말과 관람 관례. 처음 가는 공연이라면 「악장 사이 박수」부터 확인', groups: [
+          { name: '공연 관람', text: '공연장에서 자주 듣는 말과 관람 관례. 처음 가는 공연이라면 \'악장 사이 박수\'부터 확인', groups: [
             { items: termsIn('공연 관람'), kind: 'term' }
           ] },
-          { name: '읽는 법 · 기타', text: '작품번호와 조성 이름 읽는 법, 그 밖의 말', groups: [
+          { name: '읽는 법 · 기타', text: '작품 번호와 조성 이름 읽는 법, 그 밖의 말', groups: [
             { label: '직책 · 제도 · 그 밖의 말', items: termsIn('직책 · 제도 · 그 밖의 말'), kind: 'term' },
-            { label: '작품번호', items: studyData.reading.catalogues, kind: 'reading', intro: studyData.reading.intro },
+            { label: '작품 번호', items: studyData.reading.catalogues, kind: 'reading', intro: studyData.reading.intro },
             { label: '조성 이름', keys: studyData.reading.keys }
           ] }
         ];
@@ -1674,7 +1670,7 @@ details:not([open]) > :not(summary) { display: none; }
           entries.push({ kind: 'era', type: '시대', title: era.name, subtitle: era.years, value: era.name, search: [era.name, era.years, era.summary, era.genres, era.points.join(' '), era.composers.join(' ')].join(' ') });
         });
         studyData.composers.forEach(function (composer) {
-          entries.push({ kind: 'composer', type: '작곡가', title: composer.full.split(' (')[0], subtitle: composer.era, value: composer.short, search: [composer.short, composer.full, composer.era, composer.summary, composer.together].concat(composer.works).join(' ') });
+          entries.push({ kind: 'composer', type: '작곡가', title: composer.full.split('(')[0], subtitle: composer.era, value: composer.short, search: [composer.short, composer.full, composer.era, composer.summary, composer.together].concat(composer.works).join(' ') });
           composer.works.forEach(function (work, workIndex) {
             entries.push({ kind: 'work', type: '대표곡', title: work.split(' — ')[0], subtitle: composer.short, value: composer.short + '::' + workIndex, search: composer.short + ' ' + work });
           });
@@ -1709,7 +1705,7 @@ details:not([open]) > :not(summary) { display: none; }
           });
         });
         studyData.reading.catalogues.forEach(function (item) {
-          entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '읽는 법 · 기타 · 작품번호', value: '읽는 법 · 기타::' + item[0], search: [item[0], item[1], item[2] || '', '작품번호 읽는 법'].join(' ') });
+          entries.push({ kind: 'dictionary-item', type: '사전', title: item[0], subtitle: '읽는 법 · 기타 · 작품 번호', value: '읽는 법 · 기타::' + item[0], search: [item[0], item[1], item[2] || '', '작품 번호 읽는 법'].join(' ') });
         });
         return entries;
       }
@@ -1974,6 +1970,14 @@ details:not([open]) > :not(summary) { display: none; }
         var badge = createElement('span', 'record-rating', starText(rating));
         badge.setAttribute('aria-label', '별점 ' + rating + '점');
         record.querySelector('.status').insertAdjacentElement('afterend', badge);
+        var noteBody = record.querySelector('.note-detail .detail-body');
+        if (!noteBody) return;
+        var line = createElement('p', 'note-rating');
+        line.appendChild(createElement('span', '', '별점'));
+        var stars = createElement('span', 'note-stars', starText(rating));
+        stars.setAttribute('aria-label', rating + '점');
+        line.appendChild(stars);
+        noteBody.insertBefore(line, noteBody.firstChild);
       }
 
       function icsDate(date) {
@@ -2093,12 +2097,12 @@ details:not([open]) > :not(summary) { display: none; }
         parent.appendChild(stat);
       }
 
-      function appendStatRow(list, title, sub, date, target) {
+      function appendStatRow(list, title, sub, date, target, subClass) {
         var row = createElement('button', 'stat-row');
         row.type = 'button';
         row.appendChild(createElement('strong', '', title));
+        if (sub) row.appendChild(createElement('span', 'stat-sub' + (subClass ? ' ' + subClass : ''), sub));
         if (date) row.appendChild(createElement('span', 'stat-date', date));
-        if (sub) row.appendChild(createElement('span', 'stat-sub', sub));
         row.addEventListener('click', function () { revealTarget(target); });
         list.appendChild(row);
       }
@@ -2118,7 +2122,7 @@ details:not([open]) > :not(summary) { display: none; }
         } else {
           data.notes.forEach(function (note) {
             var sub = note.rating ? starText(note.rating) : '';
-            appendStatRow(list, note.record.querySelector('h3').textContent.trim(), sub, shortDate(note.record), note.record.querySelector('.note-detail'));
+            appendStatRow(list, note.record.querySelector('h3').textContent.trim(), sub, shortDate(note.record), note.record.querySelector('.note-detail'), 'stat-stars');
           });
         }
         if (!list.children.length) {
